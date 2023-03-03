@@ -58,16 +58,13 @@ def ScoutPage(request, event, level, num, side):
     })
 
 def RecordPage(request, event, level, num, robot):
-    eventData = Event.objects.get(id=event)
     matchData = Match.objects.get(id=f'{event}_{level}_{num}')
     if robot == 0:
         return render(request, 'record.html', {
-            'eventData': eventData,
             'matchData': matchData,
         })
     scoreData = MatchData.objects.get(id=f'{event}_{level}_{num}_{robot}')
     return render(request, 'result.html', {
-            'eventData': eventData,
             'matchData': matchData,
             'scoreData': scoreData,
     })

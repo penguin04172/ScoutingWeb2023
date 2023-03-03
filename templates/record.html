@@ -1,10 +1,140 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Scouting {{selEvent}}{% endblock title %}
 {% block nav %}{% include 'nav.html' %}{% endblock nav %}
 {% block container %}
 <div class="container">
-    <div class="row mt-3">
-        <h1></h1>
+    <div class="row mt-3 text-center">
+        <h3 id="title">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
+    </div>
+    <div class="row mb-1 justify-content-around">
+        <h5>Robot</h5>
+        <div class="col-4">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot0" value="0">
+                <label class="form-check-label" for="robot0">
+                Blue 1
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot1" value="1">
+                <label class="form-check-label" for="robot1">
+                Blue 2
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot2" value="2">
+                <label class="form-check-label" for="robot2">
+                Blue 3
+                </label>
+            </div>
+            </div>
+            <div class="col-4">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot3" value="3">
+                <label class="form-check-label" for="robot3">
+                Red 1
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot4" value="4">
+                <label class="form-check-label" for="robot4">
+                Red 2
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="robot" id="robot5" value="5">
+                <label class="form-check-label" for="robot5">
+                Red 3
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="team" class="col-sm-2 col-form-label">Team #</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="team" required>
+        </div>
+    </div>
+
+    <!-- Auto -->
+    
+    <div class="row mb-1">
+        <h5>Auto Scoring</h5>
+        <!-- x: 42 y: 42 -->
+        <canvas style="background-image: url({% static 'img/grid.jpg' %}); background-size: 100% 100%; backgroung-position: center; backgroung-repeat: no-repeat; height: 167px; width: 377px;"
+                class="mx-auto"
+                onclick="canvasClick(this, event)">
+        </canvas>
+    </div>
+    <div class="row mb-1">
+        <h5>Moving</h5>
+        <div class="col-6">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="cable">
+                <label class="form-check-label" for="cable">
+                    Cable
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="mobility">
+                <label class="form-check-label" for="mobility">
+                    Mobility
+                </label>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="charge">
+                <label class="form-check-label" for="charge">
+                    Charge Station
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <h5>Docked</h5>
+        <div class="col">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock0" value="0" checked>
+                <label class="form-check-label" for="auto_dock0">
+                    Not Attempted
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock1" value="1">
+                <label class="form-check-label" for="auto_dock1">
+                    Docked (not Engaged)
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock2" value="2">
+                <label class="form-check-label" for="auto_dock2">
+                    Engaged
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- TeleOP -->
+
+    <div class="row mb-1">
+        
     </div>
 </div>
 {% endblock container %}
+{% block script %}
+<script>
+    function canvasClick(canvas, event) {
+        // console.log(event);
+        let ctx = canvas.getContext("2d");
+        let x = parseInt(event.offsetX/42);
+        let y = parseInt(event.offsetY/42);
+
+        // ctx.fillStyle="#FF0000";
+        // ctx.beginPath();
+        // ctx.arc(6+(x*42), y*42, 10, 0, Math.PI*2);
+        // ctx.fill();
+    }
+</script>
+{% endblock script %}

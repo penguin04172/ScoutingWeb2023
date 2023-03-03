@@ -34,6 +34,7 @@ class Match(models.Model):
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
     scouter = models.CharField(max_length=30, default="")
+    team = models.IntegerField(default=0)
     robot = models.IntegerField(default=0)
     start = models.IntegerField(default=0)
     auto_score = models.TextField(default="")
