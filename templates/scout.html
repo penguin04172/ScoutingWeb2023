@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% block title %}Scouting {{selEvent}}{% endblock title %}
+{% block nav %}{% include 'nav.html' %}{% endblock nav %}
+{% block container %}
+<div class="container">
+    <div class="row mt-3">
+        <div class="col text-center">
+            <h1>{{matchData.event_id}} {{matchData.level_as_str}} {{matchData.num}}</h1>
+            <h3>{{side|title}} Scout</h3>
+        </div>
+    </div>
+    <form action="./" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <table class="table table-striped text-center align-middle mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col" class="col-4">Rank / Teams</th>
+                        {% for scout in scoutList %}
+                        <th scope="col">{{scout.id|last}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Quickness</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="quick" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.quick == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.quick == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.quick == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Defence</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="defence" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.defence == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.defence == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.defence == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Awareness</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="aware" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.aware == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.aware == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.aware == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Human Player Coop</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="human" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.human == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.human == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.human == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Pick Speed</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="pick" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.pick == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.pick == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.pick == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Place speed</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="place" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.place == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.place == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.place == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Fouls</th>
+                        {% for scout in scoutList %}
+                        <td><input type="text" value="{{scout.foul}}" class="form-control form-control-sm" name="foul"></td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <th scope="row">Comments</th>
+                        {% for scout in scoutList %}
+                        <td><input type="text" value="{{scout.other}}" class="form-control form-control-sm" name="other"></td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row fixed-bottom">
+            <button class="btn btn-primary fixed-buttom" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+{% endblock container %}
+{% block script %}
+<script>
+    function checkSelect(e) {
+        var all = document.getElementsByName(e.name);
+        var sum = 0;
+        var tar;
+        for (let i=0; i<all.length; i++) {
+            sum += all[i].selectedIndex;
+            if (e.value == all[i].value && e != all[i]) {
+                var tar = i;
+            }
+        }
+        all[tar].selectedIndex += (3-sum);
+    }
+</script>
+{% endblock script %}

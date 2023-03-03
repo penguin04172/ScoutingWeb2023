@@ -1,16 +1,16 @@
+{% load static %}
 <!doctype html>
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width= device-width, initial-scale=1.0">
   <title>{% block title %} {% endblock title %}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" />
 </head>
 <body>
     {% block nav %} {% endblock nav %}
-    <div class="container mx-auto">
-        {% block content %} {% endblock content %}
-    </div>
+    {% block container %} {% endblock container %}
+    <script src="{% static 'js/bootstrap.js' %}"></script>
     {% block script %} {% endblock script %}
 </body>
 </html>

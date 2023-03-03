@@ -19,8 +19,13 @@ from .views import *
 
 router = DefaultRouter()
 router.register('events', EventViewSet, basename='event')
+router.register('match', MatchViewSet, basename='match')
 
 urlpatterns = [
     path('', MainPage),
+    path('data/<str:event>/', EventPage),
+    path('data/<str:event>/<int:level>/<int:num>/', MatchPage),
+    path('data/<str:event>/<int:level>/<int:num>/<int:robot>/', RecordPage),
+    path('data/<str:event>/<int:level>/<int:num>/<str:side>/', ScoutPage),
     path('api/', include(router.urls)),
 ]
