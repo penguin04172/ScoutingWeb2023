@@ -7,9 +7,9 @@
     <div class="row mt-3 text-center">
         <h3 id="title">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
     </div>
-    <div class="row mb-1 justify-content-around">
+    <div class="row mb-1 justify-content-center">
         <h5>Robot</h5>
-        <div class="col-4">
+        <div class="col-3">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="robot" id="robot0" value="0">
                 <label class="form-check-label" for="robot0">
@@ -29,7 +29,7 @@
                 </label>
             </div>
             </div>
-            <div class="col-4">
+            <div class="col-3">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="robot" id="robot3" value="3">
                 <label class="form-check-label" for="robot3">
@@ -56,20 +56,55 @@
             <input type="number" class="form-control" id="team" required>
         </div>
     </div>
+    <h5>Start Place</h5>
+    <div class="row mb-3 justify-content-center">
+        <div class="col-sm-12 col-lg-6">
+            <img src="{% static 'img/field.jpg' %}" class="img-fluid">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        {% for i in '12345'|make_list %}
+                        <td>
+                            <input type="radio" class="form-check-input" name="start" value="{{i}}" {% if i == '1' %}checked{% endif %} id="start{{i}}">
+                            <label class="form-check-label" for="start{{i}}">{{i}}</label>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Auto -->
     
-    <div class="row mb-1">
-        <h5>Auto Scoring</h5>
+    <h3>Auto Scoring</h3>
+    <div class="row mb-1 justify-content-center">
         <!-- x: 42 y: 42 -->
-        <canvas style="background-image: url({% static 'img/grid.jpg' %}); background-size: 100% 100%; backgroung-position: center; backgroung-repeat: no-repeat; height: 167px; width: 377px;"
-                class="mx-auto"
-                onclick="canvasClick(this, event)">
-        </canvas>
+        <!-- <canvas style="background-image: url({% static 'img/grid.jpg' %}); background-origin: content-box; background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"
+                class="mx-auto p-0 col-10"
+                onclick="canvasClick(event)">
+        </canvas> -->
+        <div class="col-sm-12 col-lg-6">
+            <table class="table table-bordered">
+                <tbody>
+                    {% for i in '0123'|make_list %}
+                    <tr>
+                        {% for j in '012345678'|make_list %}
+                        <td style="background-color: {% if j not in '147'|make_list and i != '3' or i == '2' %}#FFCD00{% else %}#BC48FF{% endif %};">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="auto_score">
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="row mb-1">
+    <div class="row mb-1 justify-content-center">
         <h5>Moving</h5>
-        <div class="col-6">
+        <div class="col-6 col-lg-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="cable">
                 <label class="form-check-label" for="cable">
@@ -83,7 +118,7 @@
                 </label>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-6 col-lg-3">
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="charge">
                 <label class="form-check-label" for="charge">
@@ -92,9 +127,9 @@
             </div>
         </div>
     </div>
-    <div class="row mb-3">
+    <div class="row mb-3 justify-content-center">
         <h5>Docked</h5>
-        <div class="col">
+        <div class="col col-lg-6">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock0" value="0" checked>
                 <label class="form-check-label" for="auto_dock0">
@@ -117,24 +152,114 @@
     </div>
 
     <!-- TeleOP -->
-
-    <div class="row mb-1">
-        
+    <h3>Tele Scoring</h3>
+    <div class="row mb-1 justify-content-center">
+        <div class="col-sm-12 col-lg-6">
+            <table class="table table-bordered">
+                <tbody>
+                    {% for i in '0123'|make_list %}
+                    <tr>
+                        {% for j in '012345678'|make_list %}
+                        <td style="background-color: {% if j not in '147'|make_list and i != '3' or i == '2' %}#FFCD00{% else %}#BC48FF{% endif %};">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="tele_score">
+                            </div>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-3 justify-content-center">
+        <h5>Cycle Time</h5>
+        <div class="col-lg-6 col">
+            <table class="table align-middle">
+                <tbody>
+                    <tr>
+                        <td scope="row" colspan="4">
+                            <input type="text" name="cycleList" id="cycleList" class="form-control">
+                        </td>
+                        <td scope="col">
+                            <button class="btn btn-warning" type="button" onclick="undoCycle()">Undo</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td scope="row">
+                            <button class="btn btn-primary" type="button" id="cycle_start">Start</button>
+                        </td>
+                        <td style="font-size: large;">
+                            <input class="form-control" type="number" id="cycle_timer" step="0.01" value="0.00" disabled>
+                        </td>
+                        <td colspan="2">
+                            <button class="btn btn-danger" type="button">Reset</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-success" type="button" onclick="addCycle()">Add</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock container %}
 {% block script %}
 <script>
-    function canvasClick(canvas, event) {
-        // console.log(event);
-        let ctx = canvas.getContext("2d");
-        let x = parseInt(event.offsetX/42);
-        let y = parseInt(event.offsetY/42);
+    var cycleInterval;
+    function undoCycle() {
+        var cycleList = document.getElementById('cycleList');
+        if (cycleList.value == "") return;
+        else {
+            let cList = cycleList.value.split(',');
+            cList.pop();
+            cycleList.value = cList.join(',');
+        }
+    }
 
-        // ctx.fillStyle="#FF0000";
-        // ctx.beginPath();
-        // ctx.arc(6+(x*42), y*42, 10, 0, Math.PI*2);
-        // ctx.fill();
+    function addCycle() {
+        var cycleList = document.getElementById('cycleList');
+        var cycleTimer = document.getElementById('cycle_timer');
+        cycleList.value += (cycleList.value == ""?"":",") + cycleTimer.value;
+    }
+
+    function startCycle() {
+        var btnStart = document.getElementById('cycle_start');
+        if (btnStart.innerText == "Start") {
+            
+        }
+    }
+
+    function updateCycle() {
+
+    }
+
+    function interval(ms, callback) {
+        const start = document.timeline
+            ? document.timeline.currentTime
+            : performance.now();
+        function timer1(time) {
+            const gaps = time - start;
+            const seconds = Math.round(gaps / ms);
+            callback(seconds);
+            console.log(seconds);
+            const targetNext = (seconds + 1) * ms + start; // 算出下次interval开始的时间
+            const delay = document.timeline
+            ? document.timeline.currentTime
+            : performance.now(); // 取出更新完UI的时间
+            setTimeout(
+            () => {
+                requestAnimationFrame(timer1); // requestAnimationFrame 执行回调函数的时刻 当作参数，传入到callback
+            },
+            targetNext - delay // 算出距离下次interval开始时间
+            );
+        }
+        timer1(start);
+    }
+
+    window.onload = () => {
+        interval(50, updateCycle);
     }
 </script>
 {% endblock script %}
