@@ -3,211 +3,527 @@
 {% block title %}Scouting {{selEvent}}{% endblock title %}
 {% block nav %}{% include 'nav.html' %}{% endblock nav %}
 {% block container %}
+<header>
+    <div class="container">
+        <div class="row mt-3 text-center">
+            <h3 id="title">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
+        </div>
+        <div class="row mb-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Basic</button></li>
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Auto</button></li>
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Tele</button></li>
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">End</button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
 <div class="container">
-    <div class="row mt-3 text-center">
-        <h3 id="title">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
-    </div>
-    <div class="row mb-1 justify-content-center">
-        <h5>Robot</h5>
-        <div class="col-3">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot0" value="0">
-                <label class="form-check-label" for="robot0">
-                Blue 1
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot1" value="1">
-                <label class="form-check-label" for="robot1">
-                Blue 2
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot2" value="2">
-                <label class="form-check-label" for="robot2">
-                Blue 3
-                </label>
-            </div>
-            </div>
-            <div class="col-3">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot3" value="3">
-                <label class="form-check-label" for="robot3">
-                Red 1
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot4" value="4">
-                <label class="form-check-label" for="robot4">
-                Red 2
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="robot" id="robot5" value="5">
-                <label class="form-check-label" for="robot5">
-                Red 3
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <label for="team" class="col-sm-2 col-form-label">Team #</label>
-        <div class="col-sm-10">
-            <input type="number" class="form-control" id="team" required>
-        </div>
-    </div>
-    <h5>Start Place</h5>
-    <div class="row mb-3 justify-content-center">
-        <div class="col-sm-12 col-lg-6">
-            <img src="{% static 'img/field.jpg' %}" class="img-fluid">
-            <table class="table table-bordered">
-                <tbody>
-                    <tr>
-                        {% for i in '12345'|make_list %}
-                        <td>
-                            <input type="radio" class="form-check-input" name="start" value="{{i}}" {% if i == '1' %}checked{% endif %} id="start{{i}}">
-                            <label class="form-check-label" for="start{{i}}">{{i}}</label>
-                        </td>
-                        {% endfor %}
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    <!-- Auto -->
+    <form action="./" method="post" onsubmit="return checkForm()">
+        {% csrf_token %}
+        <!-- Basic -->
+        <div class="d-block" name="page" id="basic">
+            <div class="row mb-1 justify-content-center">
+                <h5 id="robotTitle">Robot</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot0" value="0" onclick="changeTeam(this)"> 
+                                        <label class="form-check-label" for="robot0">Blue 1</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot3" value="3" onclick="changeTeam(this)">
+                                        <label class="form-check-label" for="robot3">Red 1</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot1" value="1" onclick="changeTeam(this)"> 
+                                        <label class="form-check-label" for="robot1">Blue 2</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot4" value="4" onclick="changeTeam(this)">
+                                        <label class="form-check-label" for="robot4">Red 2</label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot2" value="2" onclick="changeTeam(this)"> 
+                                        <label class="form-check-label" for="robot2">Blue 3</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="robot" id="robot5" value="5" onclick="changeTeam(this)">
+                                        <label class="form-check-label" for="robot5">Red 3</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <h5>Team #</h5>
+                <div class="col col-lg-6">
+                    <input type="number" class="form-control" value="" name="team1" id="team" disabled>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <h5>Start Place</h5>
+                <div class="col-sm-12 col-lg-6">
+                    <img src="{% static 'img/field.jpg' %}" class="img-fluid">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                {% for i in '12345'|make_list %}
+                                <td>
+                                    <input type="radio" class="form-check-input" name="start" value="{{i}}" {% if i == '1' %}checked{% endif %} id="start{{i}}">
+                                    <label class="form-check-label" for="start{{i}}">{{i}}</label>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     
-    <h3>Auto Scoring</h3>
-    <div class="row mb-1 justify-content-center">
-        <!-- x: 42 y: 42 -->
-        <!-- <canvas style="background-image: url({% static 'img/grid.jpg' %}); background-origin: content-box; background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"
-                class="mx-auto p-0 col-10"
-                onclick="canvasClick(event)">
-        </canvas> -->
-        <div class="col-sm-12 col-lg-6">
-            <table class="table table-bordered">
-                <tbody>
-                    {% for i in '0123'|make_list %}
-                    <tr>
-                        {% for j in '012345678'|make_list %}
-                        <td style="background-color: {% if j not in '147'|make_list and i != '3' or i == '2' %}#FFCD00{% else %}#BC48FF{% endif %};">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="auto_score">
-                            </div>
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Auto -->
+        <div class="d-none" name="page" id="auto">
+            <h3>Auto Scoring</h3>
+            <div class="row mb-1 justify-content-center">
+                <!-- x: 42 y: 42 -->
+                <!-- <canvas style="background-image: url({% static 'img/grid.jpg' %}); background-origin: content-box; background-size: 100% 100%; background-position: center; background-repeat: no-repeat;"
+                        class="mx-auto p-0 col-10"
+                        onclick="canvasClick(event)">
+                </canvas> -->
+                <div class="col-sm-12 col-lg-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            {% for i in '0123'|make_list %}
+                            <tr>
+                                {% for j in '012345678'|make_list %}
+                                <td class="{% if j not in '147'|make_list and i != '3' or i == '2' %}bg-cone{% else %}bg-cube{% endif %}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="auto_place">
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="text" value="" name="auto_score" id="auto_score" hidden>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>Moving</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="cross_cable" id="cable">
+                                        <label class="form-check-label" for="cable">
+                                            Cross Cable
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="cross_charge" id="charge">
+                                        <label class="form-check-label" for="charge">
+                                            Cross Charge Station
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="auto_mobility" id="mobility">
+                                        <label class="form-check-label" for="mobility">
+                                            Mobility
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <h5>Docked</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="auto_docked" id="auto_dock0" value="0" checked>
+                                        <label class="form-check-label" for="auto_dock0">
+                                            Not Attempted
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="auto_docked" id="auto_dock1" value="2">
+                                        <label class="form-check-label" for="auto_dock1">
+                                            Docked (not Engaged)
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="auto_docked" id="auto_dock2" value="3">
+                                        <label class="form-check-label" for="auto_dock2">
+                                            Engaged
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="row mb-1 justify-content-center">
-        <h5>Moving</h5>
-        <div class="col-6 col-lg-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="cable">
-                <label class="form-check-label" for="cable">
-                    Cable
-                </label>
+    
+        <!-- TeleOP -->
+        <div class="d-none" name="page" id="tele">
+            <h3>Tele Scoring</h3>
+            <div class="row mb-1 justify-content-center">
+                <div class="col-sm-12 col-lg-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            {% for i in '0123'|make_list %}
+                            <tr>
+                                {% for j in '012345678'|make_list %}
+                                <td class="{% if j not in '147'|make_list and i != '3' or i == '2' %}bg-cone{% else %}bg-cube{% endif %}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tele_place">
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <input type="text" value="" name="tele_score" id="tele_score" hidden>
+                </div>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="mobility">
-                <label class="form-check-label" for="mobility">
-                    Mobility
-                </label>
+            <div class="row mb-1 justify-content-center">
+                <h5>Cycle Time</h5>
+                <div class="col-lg-6 col">
+                    <table class="table table-borderless align-middle">
+                        <tbody>
+                            <tr>
+                                <td scope="row" colspan="4">
+                                    <input type="text" name="timer_cycle" id="cycleList" class="form-control" disabled>
+                                </td>
+                                <td scope="col">
+                                    <button class="btn btn-warning" type="button" onclick="undoCycle()">Del</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row">
+                                    <button class="btn btn-success" type="button" id="cycle_start" onclick="startTimer('cycle')">Start</button>
+                                </td>
+                                <td style="font-size: large;">
+                                    <input class="form-control" type="number" id="cycle_timer" step="0.01" value="0.00" disabled>
+                                </td>
+                                <td colspan="2">
+                                    <button class="btn btn-danger" type="button" onclick="resetTimer('cycle')">Reset</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" type="button" onclick="addCycle()">Add</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>Pieces</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label class="form-label">Transfer</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'trans')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_trans" id="trans" disabled>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'trans')">+</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label class="form-label">Drop</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'drop')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_fail" id="drop" disabled>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'drop')">+</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>PickUp</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td scope="row" class="bg-cone">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sub_cone">
+                                        <label class="form-check-label" for="sub_cone">
+                                            Substation Cone
+                                        </label>
+                                    </div>
+                                </td>
+                                <td scope="col" class="bg-cube">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sub_cube">
+                                        <label class="form-check-label" for="sub_cube">
+                                            Substation Cube
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td scope="row" class="bg-cone">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="floor_cone">
+                                        <label class="form-check-label" for="floor_cone">
+                                            Floor Cone
+                                        </label>
+                                    </div>
+                                </td>
+                                <td scope="col" class="bg-cube">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="floor_cube">
+                                        <label class="form-check-label" for="floor_cube">
+                                            Floor Cube
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>Behavior</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tele_fed" id="fed">
+                                        <label class="form-check-label" for="fed">
+                                            Was Fed
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>Was Defended</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td scope="row">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence0">
+                                        <label class="form-check-label" for="defence0" name="defList"></label>
+                                    </div>
+                                </td>
+                                <td scope="row">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence1">
+                                        <label class="form-check-label" for="defence1" name="defList"></label>
+                                    </div>
+                                </td>
+                                <td scope="row">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence2">
+                                        <label class="form-check-label" for="defence2" name="defList"></label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="col-6 col-lg-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="charge">
-                <label class="form-check-label" for="charge">
-                    Charge Station
-                </label>
+    
+        <!-- EndGame -->
+        <div class="d-none" name="page" id="end">
+            <div class="row mb-1 justify-content-center">
+                <h5>Docking Time</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td scope="row">
+                                    <button class="btn btn-success" type="button" id="dock_start" onclick="startTimer('dock')">Start</button>
+                                </td>
+                                <td style="font-size: large;">
+                                    <input class="form-control" type="number" name="timer_dock" id="dock_timer" step="0.01" value="0.00" disabled>
+                                </td>
+                                <td colspan="2">
+                                    <button class="btn btn-danger" type="button" onclick="resetTimer('dock')">Reset</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
+                <h5>Docked</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="end_dock" id="end_dock0" value="0" checked>
+                                        <label class="form-check-label" for="end_dock0">
+                                            Not Attempted
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="end_dock" id="end_dock1" value="1">
+                                        <label class="form-check-label" for="end_dock1">
+                                            Parked
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="end_dock" id="end_dock2" value="2">
+                                        <label class="form-check-label" for="end_dock2">
+                                            Docked (not Engaged)
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="end_dock" id="end_dock3" value="3">
+                                        <label class="form-check-label" for="end_dock3">
+                                            Engaged
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mb-3 justify-content-center">
+                <h5>Others</h5>
+                <div class="col col-lg-6">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="other_immobolity" id="died">
+                                        <label class="form-check-label" for="died">
+                                            Died/Immobilized
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="other_tippy" id="tippy">
+                                        <label class="form-check-label" for="tippy">
+                                            &lt;-Tippy?
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Comment</span>
+                                        <input type="text" name="other_comment" class="form-control">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row mx-2 fixed-bottom">
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
-    </div>
-    <div class="row mb-3 justify-content-center">
-        <h5>Docked</h5>
-        <div class="col col-lg-6">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock0" value="0" checked>
-                <label class="form-check-label" for="auto_dock0">
-                    Not Attempted
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock1" value="1">
-                <label class="form-check-label" for="auto_dock1">
-                    Docked (not Engaged)
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock2" value="2">
-                <label class="form-check-label" for="auto_dock2">
-                    Engaged
-                </label>
-            </div>
-        </div>
-    </div>
+    </form>
 
-    <!-- TeleOP -->
-    <h3>Tele Scoring</h3>
-    <div class="row mb-1 justify-content-center">
-        <div class="col-sm-12 col-lg-6">
-            <table class="table table-bordered">
-                <tbody>
-                    {% for i in '0123'|make_list %}
-                    <tr>
-                        {% for j in '012345678'|make_list %}
-                        <td style="background-color: {% if j not in '147'|make_list and i != '3' or i == '2' %}#FFCD00{% else %}#BC48FF{% endif %};">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="tele_score">
-                            </div>
-                        </td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row mb-3 justify-content-center">
-        <h5>Cycle Time</h5>
-        <div class="col-lg-6 col">
-            <table class="table align-middle">
-                <tbody>
-                    <tr>
-                        <td scope="row" colspan="4">
-                            <input type="text" name="cycleList" id="cycleList" class="form-control">
-                        </td>
-                        <td scope="col">
-                            <button class="btn btn-warning" type="button" onclick="undoCycle()">Undo</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td scope="row">
-                            <button class="btn btn-primary" type="button" id="cycle_start">Start</button>
-                        </td>
-                        <td style="font-size: large;">
-                            <input class="form-control" type="number" id="cycle_timer" step="0.01" value="0.00" disabled>
-                        </td>
-                        <td colspan="2">
-                            <button class="btn btn-danger" type="button">Reset</button>
-                        </td>
-                        <td>
-                            <button class="btn btn-success" type="button" onclick="addCycle()">Add</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
+
 {% endblock container %}
 {% block script %}
 <script>
-    var cycleInterval;
+    var teamList = "{{matchData.teams}}".split(',');
+    var showPage = document.getElementById('basic');
+
+    function changePage(e) {
+        showPage.className = "d-none";
+        var page = document.getElementById(e.innerText.toLowerCase());
+        page.className = "d-block";
+        showPage = page;
+    }
+
+    function changeTeam(event) {
+        var team = document.getElementById('team');
+        var defList = document.getElementsByName('defList');
+        
+        team.value = teamList[event.value];
+        for (var i=0 ; i<3 ; i++) {
+            defList[i].innerText = teamList[i+3-(parseInt(event.value)/3)*3];
+        }
+    }
+
+    var cycleInterval=false;
+    var dockInterval=false;
     function undoCycle() {
         var cycleList = document.getElementById('cycleList');
         if (cycleList.value == "") return;
@@ -222,17 +538,41 @@
         var cycleList = document.getElementById('cycleList');
         var cycleTimer = document.getElementById('cycle_timer');
         cycleList.value += (cycleList.value == ""?"":",") + cycleTimer.value;
+        cycleTimer.value = "0.00";
     }
 
-    function startCycle() {
-        var btnStart = document.getElementById('cycle_start');
+    function startTimer(target) {
+        var btnStart = document.getElementById(target + '_start');
         if (btnStart.innerText == "Start") {
-            
+            if (target == "cycle") cycleInterval = true;
+            else if (target == "dock") dockInterval = true;
+            btnStart.innerText = "Stop";
+        }else if (btnStart.innerText == "Stop") {
+            if (target == "cycle") cycleInterval = false;
+            else if (target == "dock") dockInterval = false;
+            btnStart.innerText = "Start";
         }
     }
 
-    function updateCycle() {
+    function resetTimer(target) {
+        var btnStart = document.getElementById(target + '_start');
+        var timer = document.getElementById(target + "_timer");
+        if (target == "cycle") cycleInterval = false;
+        else if (target == "dock") dockInterval = false;
+        btnStart.innerText = "Start";
+        timer.value = "0.00";
+    }
 
+    function updateCycle() {
+        if (cycleInterval) {
+            let cycleTimer = document.getElementById('cycle_timer');
+            cycleTimer.value = (parseFloat(cycleTimer.value) + 0.05).toFixed(2);
+        }
+        
+        if (dockInterval) {
+            let dockTimer = document.getElementById('dock_timer');
+            dockTimer.value = (parseFloat(dockTimer.value) + 0.05).toFixed(2);
+        }
     }
 
     function interval(ms, callback) {
@@ -243,7 +583,7 @@
             const gaps = time - start;
             const seconds = Math.round(gaps / ms);
             callback(seconds);
-            console.log(seconds);
+            // console.log(seconds);
             const targetNext = (seconds + 1) * ms + start; // 算出下次interval开始的时间
             const delay = document.timeline
             ? document.timeline.currentTime
@@ -258,8 +598,41 @@
         timer1(start);
     }
 
+    function changeValue(event, target) {
+        var d = document.getElementById(target);
+        if (event.innerText == "-") {
+            if (parseInt(d.value) > 0) {
+                d.value = parseInt(d.value) - 1;
+            }
+        }else if (event.innerText == "+") {
+            d.value = parseInt(d.value) + 1;
+        }
+    }
+
     window.onload = () => {
         interval(50, updateCycle);
     }
+
+    function checkForm() {
+        var autoScore = document.getElementsByName('auto_place');
+        var teleScore = document.getElementsByName('tele_place');
+        var autoOut = document.getElementById('auto_score');
+        var teleOut = document.getElementById('tele_score');
+        
+        autoOut.value = "";
+        teleOut.value = "";
+
+        for (var i=0 ; i<36 ; i++) {
+            if (autoScore[i].checked) {
+                autoOut.value += ((i == 0?"":",") + i.toString());
+            }
+            if (teleScore[i].checked) {
+                teleOut.value += ((i == 0?"":",") + i.toString());
+            }
+        }
+
+        return true;
+    }
+
 </script>
 {% endblock script %}
