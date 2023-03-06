@@ -45,8 +45,7 @@ class MatchData(models.Model):
     auto_docked = models.IntegerField(default=0)
     timer_cycle = models.TextField(default="")
     tele_trans = models.IntegerField(default=0)
-    tele_fed = models.IntegerField(default=0)
-    tele_defended = models.BooleanField(default=False)
+    tele_fed = models.BooleanField(default=False)
     tele_defender = models.CharField(max_length=15, default="")
     tele_pick = models.IntegerField(default=0)
     tele_fail = models.IntegerField(default=0)
@@ -54,6 +53,7 @@ class MatchData(models.Model):
     end_dock = models.IntegerField(default=0)
     other_link = models.IntegerField(default=0)
     other_immobolity = models.BooleanField(default=False)
+    other_tippy = models.BooleanField(default=False)
     other_comment = models.TextField(default="")
     target = models.ForeignKey(Match, on_delete=models.CASCADE)
 

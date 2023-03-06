@@ -60,6 +60,22 @@ def ScoutPage(request, event, level, num, side):
 def RecordPage(request, event, level, num, robot):
     matchData = Match.objects.get(id=f'{event}_{level}_{num}')
     if robot == 0:
+        if request.method == 'POST':
+            print({
+                'robot': request.POST.get('robot'),
+                'team': request.POST.get('team1'),
+                'start': request.POST.get('start'),
+                'auto_score': request.POST.get('auto_score'),
+                'tele_score': request.POST.get('tele_score'),
+                'cross_cable': request.POST.get('cross_cable'),
+                'cross_charge': request.POST.get('cross_charge'),
+                'auto_mobility': request.POST.get('auto_mobility'),
+                'auto_docked': request.POST.get('auto_docked'),
+                'timer_cycle': request.POST.get('timer_cycle'),
+                'tele_trans': request.POST.get('tele_trans'),
+            })
+
+            return HttpResponseRedirect(f'/data/{event}/')
         return render(request, 'record.html', {
             'matchData': matchData,
         })
