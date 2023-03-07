@@ -27,6 +27,13 @@
         <!-- Basic -->
         <div class="d-block" name="page" id="basic">
             <div class="row mb-1 justify-content-center">
+                <h5>Scouter</h5>
+                <div class="col col-lg-6">
+                    <input type="text" value="{{matchData.id}}" name="id" id="matchId" hidden>
+                    <input type="text" class="form-control" value="" name="scouter" id="scouter">
+                </div>
+            </div>
+            <div class="row mb-1 justify-content-center">
                 <h5 id="robotTitle">Robot</h5>
                 <div class="col col-lg-6">
                     <table class="table table-borderless">
@@ -298,7 +305,7 @@
                             <tr>
                                 <td scope="row" class="bg-cone">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sub_cone">
+                                        <input class="form-check-input" type="checkbox" name="pickList" id="sub_cone">
                                         <label class="form-check-label" for="sub_cone">
                                             Substation Cone
                                         </label>
@@ -306,7 +313,7 @@
                                 </td>
                                 <td scope="col" class="bg-cube">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sub_cube">
+                                        <input class="form-check-input" type="checkbox" name="pickList" id="sub_cube">
                                         <label class="form-check-label" for="sub_cube">
                                             Substation Cube
                                         </label>
@@ -316,7 +323,7 @@
                             <tr>
                                 <td scope="row" class="bg-cone">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="floor_cone">
+                                        <input class="form-check-input" type="checkbox" name="pickList" id="floor_cone">
                                         <label class="form-check-label" for="floor_cone">
                                             Floor Cone
                                         </label>
@@ -324,7 +331,7 @@
                                 </td>
                                 <td scope="col" class="bg-cube">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="floor_cube">
+                                        <input class="form-check-input" type="checkbox" name="pickList" id="floor_cube">
                                         <label class="form-check-label" for="floor_cube">
                                             Floor Cube
                                         </label>
@@ -332,6 +339,7 @@
                                 </td>
                             </tr>
                         </tbody>
+                        <input type="text" value="" name="tele_pick" id="tele_pick" hidden>
                     </table>
                 </div>
             </div>
@@ -362,25 +370,26 @@
                             <tr>
                                 <td scope="row">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence0">
+                                        <input class="form-check-input" type="checkbox" name="defCheck" id="defence0">
                                         <label class="form-check-label" for="defence0" name="defList"></label>
                                     </div>
                                 </td>
                                 <td scope="row">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence1">
+                                        <input class="form-check-input" type="checkbox" name="defCheck" id="defence1">
                                         <label class="form-check-label" for="defence1" name="defList"></label>
                                     </div>
                                 </td>
                                 <td scope="row">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="def_check" id="defence2">
+                                        <input class="form-check-input" type="checkbox" name="defCheck" id="defence2">
                                         <label class="form-check-label" for="defence2" name="defList"></label>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <input type="text" value="" name="tele_defender" id="tele_defender" hidden>
                 </div>
             </div>
         </div>
@@ -489,6 +498,7 @@
                             </tr>
                         </tbody>
                     </table>
+                    <input type="number" value="0" name="other_link" id="other_link" hidden>
                 </div>
             </div>
             <div class="row mx-2 fixed-bottom">
@@ -520,6 +530,8 @@
         for (var i=0 ; i<3 ; i++) {
             defList[i].innerText = teamList[i+3-(parseInt(event.value)/3)*3];
         }
+        var dataId = document.getElementById('matchId');
+        dataId.value = "{{matchData.id}}_" + event.value;
     }
 
     var cycleInterval=false;
@@ -611,6 +623,9 @@
 
     window.onload = () => {
         interval(50, updateCycle);
+        var robot = document.getElementsByName('robot');
+        robot[0].checked = true;
+        changeTeam(robot[0]);
     }
 
     function checkForm() {
@@ -622,13 +637,63 @@
         autoOut.value = "";
         teleOut.value = "";
 
-        for (var i=0 ; i<36 ; i++) {
+        for (var i=0; i<36; i++) {
             if (autoScore[i].checked) {
-                autoOut.value += ((i == 0?"":",") + i.toString());
+                autoOut.value += ((autoOut.value == ""?"":",") + i.toString());
             }
             if (teleScore[i].checked) {
-                teleOut.value += ((i == 0?"":",") + i.toString());
+                teleOut.value += ((teleOut.value == ""?"":",") + i.toString());
             }
+        }
+
+        var scoring = new Array(27).fill(false);
+        var link = new Array(27).fill(false);
+        var otherLink = document.getElementById('other_link');
+        otherLink.value = 0;
+
+        for (var i=0; i<2; i++) {
+            for (var j=0; j<9; j++) {
+                if (autoScore[i*9+j].checked || teleScore[i*9+j].checked) {
+                    scoring[i*9+j] = true;
+                    if (j>1) {
+                        if ((scoring[i*9+j] && scoring[i*9+j-1] && scoring[i*9+j-2]) && !(link[i*9+j-1] || link[i*9+j-2])) {
+                            link[i*9+j] = true;
+                            otherLink.value = parseInt(otherLink.value) + 1;
+                        }
+                    }
+                }
+            }
+        }
+        for (var j=0; j<9; j++) {
+            if (autoScore[18+j].checked || autoScore[27+j].checked || teleScore[18+j].checked || teleScore[27+j].checked) {
+                scoring[18+j] = true;
+                if (j>1) {
+                    if ((scoring[18+j] && scoring[18+j-1] && scoring[18+j-2]) && !(link[18+j-1] || link[18+j-2])) {
+                        link[18+j] = true;
+                        otherLink.value = parseInt(otherLink.value) + 1;
+                    }
+                }
+            }
+        }
+        // console.log(scoring);
+        // console.log(link);
+        // console.log(otherLink.value);
+        
+        var teleDef = document.getElementById('tele_defender');
+        var defList = document.getElementsByName('defList');
+        var defCheck = document.getElementsByName('defCheck');
+
+        for (var i=0; i<3; i++) {
+            if (defCheck[i].checked) {
+                teleDef.value += (teleDef.value == ""?"":",") + defList[i].innerText;
+            }
+        }
+
+        var pickList = document.getElementsByName('pickList');
+        var pickOut = document.getElementById('tele_pick');
+        pickOut.value = "";
+        for (var i=0; i<4; i++) {
+            pickOut.value += pickList[i].checked?"1":"0";
         }
 
         return true;

@@ -47,7 +47,7 @@ class MatchData(models.Model):
     tele_trans = models.IntegerField(default=0)
     tele_fed = models.BooleanField(default=False)
     tele_defender = models.CharField(max_length=15, default="")
-    tele_pick = models.IntegerField(default=0)
+    tele_pick = models.CharField(max_length=4, default="0000")
     tele_fail = models.IntegerField(default=0)
     timer_dock = models.TextField(default="")
     end_dock = models.IntegerField(default=0)
@@ -55,7 +55,7 @@ class MatchData(models.Model):
     other_immobolity = models.BooleanField(default=False)
     other_tippy = models.BooleanField(default=False)
     other_comment = models.TextField(default="")
-    target = models.ForeignKey(Match, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
@@ -70,7 +70,7 @@ class SuperScout(models.Model):
     place = models.IntegerField(default=3)
     foul = models.CharField(max_length=100, default="")
     other = models.CharField(max_length=100, default="")
-    target = models.ForeignKey(Match, on_delete=models.CASCADE)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
