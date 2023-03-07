@@ -80,7 +80,7 @@
             <div class="row mb-3 justify-content-center">
                 <h5>Team #</h5>
                 <div class="col col-lg-6">
-                    <input type="number" class="form-control" value="" name="team1" id="team" disabled>
+                    <input type="number" class="form-control" value="" name="team" id="team" readonly>
                 </div>
             </div>
             <div class="row mb-3 justify-content-center">
@@ -239,7 +239,7 @@
                         <tbody>
                             <tr>
                                 <td scope="row" colspan="4">
-                                    <input type="text" name="timer_cycle" id="cycleList" class="form-control" disabled>
+                                    <input type="text" name="timer_cycle" id="cycleList" class="form-control" readonly>
                                 </td>
                                 <td scope="col">
                                     <button class="btn btn-warning" type="button" onclick="undoCycle()">Del</button>
@@ -250,7 +250,7 @@
                                     <button class="btn btn-success" type="button" id="cycle_start" onclick="startTimer('cycle')">Start</button>
                                 </td>
                                 <td style="font-size: large;">
-                                    <input class="form-control" type="number" id="cycle_timer" step="0.01" value="0.00" disabled>
+                                    <input class="form-control" type="number" id="cycle_timer" step="0.01" value="0.00" readonly>
                                 </td>
                                 <td colspan="2">
                                     <button class="btn btn-danger" type="button" onclick="resetTimer('cycle')">Reset</button>
@@ -273,7 +273,7 @@
                                     <label class="form-label">Transfer</label>
                                     <div class="input-group">
                                         <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'trans')">-</button>
-                                        <input class="form-control" type="number" value="0" name="tele_trans" id="trans" disabled>
+                                        <input class="form-control" type="number" value="0" name="tele_trans" id="trans" readonly>
                                         <button class="btn btn-primary" type="button" onclick="changeValue(this, 'trans')">+</button>
                                     </div>
                                 </td>
@@ -281,7 +281,7 @@
                                     <label class="form-label">Drop</label>
                                     <div class="input-group">
                                         <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'drop')">-</button>
-                                        <input class="form-control" type="number" value="0" name="tele_fail" id="drop" disabled>
+                                        <input class="form-control" type="number" value="0" name="tele_fail" id="drop" readonly>
                                         <button class="btn btn-primary" type="button" onclick="changeValue(this, 'drop')">+</button>
                                     </div>
                                 </td>
@@ -397,7 +397,7 @@
                                     <button class="btn btn-success" type="button" id="dock_start" onclick="startTimer('dock')">Start</button>
                                 </td>
                                 <td style="font-size: large;">
-                                    <input class="form-control" type="number" name="timer_dock" id="dock_timer" step="0.01" value="0.00" disabled>
+                                    <input class="form-control" type="number" name="timer_dock" id="dock_timer" step="0.01" value="0.00" readonly>
                                 </td>
                                 <td colspan="2">
                                     <button class="btn btn-danger" type="button" onclick="resetTimer('dock')">Reset</button>
