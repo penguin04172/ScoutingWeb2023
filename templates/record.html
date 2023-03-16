@@ -528,7 +528,7 @@
         
         team.value = teamList[event.value];
         for (var i=0 ; i<3 ; i++) {
-            defList[i].innerText = teamList[i+3-(parseInt(event.value)/3)*3];
+            defList[i].innerText = teamList[i+3-(event.value>2?3:0)];
         }
         var dataId = document.getElementById('matchId');
         dataId.value = "{{matchData.id}}_" + event.value;

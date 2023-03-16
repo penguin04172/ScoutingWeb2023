@@ -57,6 +57,34 @@ class MatchData(models.Model):
     other_comment = models.TextField(default="")
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
+    def robot_as_str(self):
+        return f'Red {self.robot-2}' if self.robot>2 else f'Blue {self.robot+1}'
+    
+    def score_as_list(self):
+        score = [0]*27
+        ascore = list(map(int, self.auto_score.split(',')))
+        tscore = list(map(int, self.tele_score.split(',')))
+        for i in tscore:
+            if i > 26:
+                score[i-9] = 4
+            elif i > 18:
+                score[i] = 3
+            elif i%3 == 1:
+                score[i] = 4
+            else:
+                score[i] = 3
+                
+        for i in ascore:
+            if i > 26:
+                score[i-9] = 2
+            elif i > 18:
+                score[i] = 1
+            elif i%3 == 1:
+                score[i] = 2
+            else:
+                score[i] = 1
+        return score
+
     class Meta:
         ordering = ['id']
 

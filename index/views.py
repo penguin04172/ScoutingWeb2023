@@ -29,7 +29,7 @@ def MatchPage(request, event, level, num):
 
 def ScoutPage(request, event, level, num, side):
     matchData = Match.objects.get(id=f'{event}_{level}_{num}')
-    scoutList = list(SuperScout.objects.filter(target_id=f'{event}_{level}_{num}').all())
+    scoutList = list(SuperScout.objects.filter(match_id=f'{event}_{level}_{num}').all())
     if side == 'blue':
         scoutList = scoutList[0:3]
     elif side == 'red':

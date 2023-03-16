@@ -2,7 +2,91 @@
 {% block title %}Scouting {{selEvent}}{% endblock title %}
 {% block nav %}{% include 'nav.html' %}{% endblock nav %}
 {% block container %}
+<header>
+    <div class="container">
+        <div class="row mt-3 text-center">
+            <h3 id="title1">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
+            <h4 id="title2">{{scoreData.robot_as_str}} - {{scoreData.team}}</h4>
+        </div>
+        <div class="row mb-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Result</button></li>
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Data</button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
 <div class="container">
-    
+    <div class="d-block" name="page" id="result">
+        <i class="bi bi-box-fill"></i>
+    </div>
+    <div class="d-none" name="page" id="data">
+        <div class="row mb-1 justify-content-center">
+            <div class="col col-lg-6">
+                <table class="table table-bordered align-middle text-center">
+                    <tbody>
+                        <tr>
+                            {% for s in scoreData.score_as_list|slice:"0:9" %}
+                                <td class="{% if s > 2 %}bg-tele{% elif s > 0 %}bg-auto{% endif %}">
+                                    <i class="bi bi-app">
+                                        {% if s > 0 %}
+                                            {% if s|divisibleby:2 %}
+                                                <i class="bi bi-box-fill"></i>
+                                            {% else %}
+                                                <i class="bi bi-cone"></i>
+                                            {% endif %}
+                                        {% endif %}
+                                    </i>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for s in scoreData.score_as_list|slice:"9:18" %}
+                                <td class="{% if s > 2 %}bg-tele{% elif s > 0 %}bg-auto{% endif %}">
+                                    {% if s > 0 %}
+                                        {% if s|divisibleby:2 %}
+                                            <i class="bi bi-box-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-cone"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for s in scoreData.score_as_list|slice:"18:27" %}
+                                <td class="{% if s > 2 %}bg-tele{% elif s > 0 %}bg-auto{% endif %}">
+                                    {% if s > 0 %}
+                                        {% if s|divisibleby:2 %}
+                                            <i class="bi bi-box-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-cone"></i>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock container %}
+{% block script %}
+<script>
+    var showPage = document.getElementById('result');
+    function changePage(e) {
+        showPage.className = "d-none";
+        var page = document.getElementById(e.innerText.toLowerCase());
+        page.className = "d-block";
+        showPage = page;
+    }
+
+    window.onload = () => {
+        console.log({{scoreData.score_as_list}});
+    }
+</script>
+{% endblock script %}
