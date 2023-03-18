@@ -92,9 +92,11 @@ def RecordPage(request, event, level, num, robot):
             'matchData': matchData,
         })
     scoreData = MatchData.objects.get(id=f'{event}_{level}_{num}_{robot}')
+    scoutData = SuperScout.objects.get(id=f'{event}_{level}_{num}_{robot}')
     return render(request, 'result.html', {
             'matchData': matchData,
             'scoreData': scoreData,
+            'scoutData': scoutData,
     })
 
 class EventViewSet(viewsets.ModelViewSet):

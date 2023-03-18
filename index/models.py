@@ -85,6 +85,25 @@ class MatchData(models.Model):
                 score[i] = 1
         return score
 
+    def dock_as_list(self):
+        dock = []
+        dock.append('None (0)' if self.auto_docked==0 else ('Docked (8)' if self.auto_docked==2 else 'Engaged (12)'))
+        dock.append('None (0)' if self.end_dock==0 else ('Parked (2)' if self.end_dock==1 else ('Docked (6)' if self.end_dock==2 else 'Engaged (10)')))
+        return dock
+    
+    def pick_as_list(self):
+        pick = []
+        for i in range(4):
+            pick.append(self.tele_pick[i] == "1")
+        return pick
+    
+    def cycle_avg(self):
+        cycleList = list(map(float, self.timer_cycle.split(',')))
+        return round(sum(cycleList)/len(cycleList), 2)
+    
+    def defend_as_list(self):
+        return list(map(int, self.tele_defender.split(',')))
+
     class Meta:
         ordering = ['id']
 

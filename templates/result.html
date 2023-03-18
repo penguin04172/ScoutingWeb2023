@@ -20,13 +20,13 @@
 </header>
 <div class="container">
     <div class="d-block" name="page" id="result">
-        <i class="bi bi-box-fill"></i>
+
     </div>
     <div class="d-none" name="page" id="data">
         <div class="row mb-1 justify-content-center">
-            <h5>Scoring Table</h5>
+            <h5>Placement Table</h5>
             <div class="col col-lg-6">
-                <table class="table table-bordered align-middle text-center">
+                <table class="table table-bordered align-middle text-center border-dark">
                     <tbody>
                         <tr>
                             {% for s in scoreData.score_as_list|slice:"0:9" %}
@@ -79,8 +79,107 @@
         </div>
 
         <div class="row mb-1 justify-content-center">
+            <h5>Scoring</h5>
             <div class="col col-lg-6">
-                
+                <table class="table table-bordered text-center align-middle">
+                    <tbody>
+                        <tr>
+                            <th>Docked</th>
+                            <td>Auto: {{scoreData.dock_as_list.0}}</td>
+                            <td>End: {{scoreData.dock_as_list.1}}</td>
+                        </tr>
+                        <tr>
+                            <th>Docking Time</th>
+                            <td colspan="2">{{scoreData.timer_dock}}</td>
+                        </tr>
+                        <tr>
+                            <th>Moving</th>
+                            <td>Mobility: {% if scoreData.mobility %}Mobility(3){% else %}<i class="bi bi-x-lg"></i> (0){% endif %}</td>
+                            <td>Immobilized: {% if scoreData.other_immobolity %}Died{% if scoreData.other_tippy %} / Tippy{% endif %}{% else %}Alive{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Crossing</th>
+                            <td>Cable: {% if scoreData.cross_cable %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            <td>Charge Station: {% if scoreData.cross_charge %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Cycle Time</th>
+                            <td colspan="2">{{scoreData.timer_cycle}} (Avg: {{scoreData.cycle_avg}})</td>
+                        </tr>
+                        <tr>
+                            <th>Self Link</th>
+                            <td colspan="2">{{scoreData.other_link}}</td>
+                        </tr>
+                        <tr>
+                            <th>Pickup (Cone)</th>
+                            <td>Substation: {% if scoreData.pick_as_list.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            <td>Floor: {% if scoreData.pick_as_list.2 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Pickup (Cube)</th>
+                            <td>Substation: {% if scoreData.pick_as_list.1 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            <td>Floor: {% if scoreData.pick_as_list.3 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Pickup (Fed)</th>
+                            <td colspan="2">Get Fed: {% if scoreData.tele_fed %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Pieces</th>
+                            <td>Trans: {{scoreData.tele_trans}}</td>
+                            <td>Drops: {{scoreData.tele_fail}}</td>
+                        </tr>
+                        <tr>
+                            <th>Defender</th>
+                            <td colspan="2">{{scoreData.tele_defender}}</td>
+                        </tr>
+                        <tr>
+                            <th>Comment</th>
+                            <td colspan="2">{{scoreData.other_comment}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mb-1 justify-content-center">
+            <h5>Scout Rank</h5>
+            <div class="col col-lg-6">
+                <table class="table table-bordered text-center">
+                    <tbody>
+                        <tr>
+                            <th>Quickness</th>
+                            <td>{{scoutData.quick}}</td>
+                        </tr>
+                        <tr>
+                            <th>Defence</th>
+                            <td>{{scoutData.defence}}</td>
+                        </tr>
+                        <tr>
+                            <th>Awareness</th>
+                            <td>{{scoutData.aware}}</td>
+                        </tr>
+                        <tr>
+                            <th>HumanPlayer Coop</th>
+                            <td>{{scoutData.human}}</td>
+                        </tr>
+                        <tr>
+                            <th>PickUp Speed</th>
+                            <td>{{scoutData.pick}}</td>
+                        </tr>
+                        <tr>
+                            <th>Place Speed</th>
+                            <td>{{scoutData.place}}</td>
+                        </tr>
+                        <tr>
+                            <th>Fouls</th>
+                            <td>{{scoutData.foul}}</td>
+                        </tr>
+                        <tr>
+                            <th>Comments</th>
+                            <td>{{scoutData.other}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
