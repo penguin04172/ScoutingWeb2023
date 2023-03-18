@@ -16,9 +16,15 @@
                 <thead>
                     <tr>
                         <th scope="col" class="col-4">Rank / Teams</th>
-                        {% for scout in scoutList %}
-                        <th scope="col">{{scout.id|last}}</th>
-                        {% endfor %}
+                        {% if side == "blue" %}
+                            {% for team in matchData.teams_as_list|slice:"0:3" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                        {% else %}
+                            {% for team in matchData.teams_as_list|slice:"3:6" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
