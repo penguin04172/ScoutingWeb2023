@@ -1,1 +1,1 @@
-start ..\env\Scripts\python.exe manage.py runserver
+start ..\env\Scripts\python.exe manage.py runserver 0.0.0.0:80
