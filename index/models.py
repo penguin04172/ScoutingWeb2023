@@ -30,6 +30,18 @@ class Match(models.Model):
             return 'PlayOff'
         else:
             return 'Other'
+        
+class SystemScoring(models.Model):
+    id = models.CharField(max_length=30, primary_key=True, unique=True)
+    red = models.BooleanField(default=False)
+    mobility = models.IntegerField(default=0)
+    grid = models.IntegerField(default=0)
+    charge = models.IntegerField(default=0)
+    penalty = models.IntegerField(default=0)
+    total = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="sysScore")
+
 
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
@@ -51,10 +63,14 @@ class MatchData(models.Model):
     tele_fail = models.IntegerField(default=0)
     timer_dock = models.TextField(default="")
     end_dock = models.IntegerField(default=0)
-    other_link = models.IntegerField(default=0)
+    other_link = models.TextField(default="")
     other_immobolity = models.BooleanField(default=False)
     other_tippy = models.BooleanField(default=False)
     other_comment = models.TextField(default="")
+    score_link = models.IntegerField(default=0)
+    score_dock = models.IntegerField(default=0)
+    score_grid = models.IntegerField(default=0)
+    score_total = models.IntegerField(default=0)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
     def robot_as_str(self):

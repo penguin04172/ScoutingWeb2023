@@ -115,6 +115,34 @@
                 </tbody>
             </table>
         </div>
+        <div class="row">
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Mobility</th>
+                        <th scope="col">Grid</th>
+                        <th scope="col">ChargeStation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="number" value="{{systemData.mobility}}" class="form-control form-control-sm" name="mobility"></td>
+                        <td><input type="number" value="{{systemData.grid}}" class="form-control form-control-sm" name="grid"></td>
+                        <td><input type="number" value="{{systemData.charge}}" class="form-control form-control-sm" name="charge"></td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Penalty Get</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Rank Point</th>
+                    </tr>
+                    <tr>
+                        <td><input type="number" value="{{systemData.penalty}}" class="form-control form-control-sm" name="penalty"></td>
+                        <td><input type="number" value="{{systemData.total}}" class="form-control form-control-sm" name="total"></td>
+                        <td><input type="number" value="{{systemData.rank}}" class="form-control form-control-sm" name="rank"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <div class="row fixed-bottom">
             <button class="btn btn-primary" type="submit">Submit</button>

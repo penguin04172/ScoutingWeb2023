@@ -30,6 +30,8 @@ def MatchPage(request, event, level, num):
 def ScoutPage(request, event, level, num, side):
     matchData = Match.objects.get(id=f'{event}_{level}_{num}')
     scoutList = list(SuperScout.objects.filter(match_id=f'{event}_{level}_{num}').all())
+    systemData = SystemScoring.objects.get(id=f'{event}_{level}_{num}_{side}')
+
     if side == 'blue':
         scoutList = scoutList[0:3]
     elif side == 'red':
@@ -47,12 +49,21 @@ def ScoutPage(request, event, level, num, side):
                 scoutList[i].foul = request.POST.getlist('foul')[i]
                 scoutList[i].other = request.POST.getlist('other')[i]
                 scoutList[i].save()
+
+            systemData.mobility = request.POST.get('mobility')
+            systemData.grid = request.POST.get('grid')
+            systemData.charge = request.POST.get('charge')
+            systemData.penalty = request.POST.get('penalty')
+            systemData.total = request.POST.get('total')
+            systemData.rank = request.POST.get('rank')
+            systemData.save()
         except:
             return HttpResponseBadRequest()
         return HttpResponseRedirect(f'/data/{event}/')
 
     return render(request, 'scout.html', {
         'matchData': matchData,
+        'systemData': systemData,
         'scoutList': scoutList,
         'side': side,
     })
@@ -81,10 +92,14 @@ def RecordPage(request, event, level, num, robot):
             record.tele_fail = int(request.POST.get('tele_fail'))
             record.timer_dock = request.POST.get('timer_dock')
             record.end_dock = int(request.POST.get('end_dock'))
-            record.other_link = int(request.POST.get('other_link'))
+            record.other_link = request.POST.get('other_link')
             record.other_immobolity = request.POST.get('other_immobolity')!=None
             record.other_tippy = request.POST.get('other_tippy')!=None
             record.other_comment = request.POST.get('other_comment')
+            record.score_link = int(request.POST.get('score_link'))
+            record.score_dock = int(request.POST.get('score_dock'))
+            record.score_grid = int(request.POST.get('score_grid'))
+            record.score_total = int(request.POST.get('score_total'))
             record.save()
 
             return HttpResponseRedirect(f'/data/{event}/')
@@ -137,6 +152,16 @@ class MatchViewSet(viewsets.ModelViewSet):
                 pick = place,
                 place = place,
             )
+        SystemScoring.objects.create(
+            match_id = matchId,
+            id = f'{matchId}_blue',
+            red = False,
+        )
+        SystemScoring.objects.create(
+            match_id = matchId,
+            id = f'{matchId}_red',
+            red = True,
+        )
         
         return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')
     

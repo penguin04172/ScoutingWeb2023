@@ -498,7 +498,11 @@
                             </tr>
                         </tbody>
                     </table>
-                    <input type="number" value="0" name="other_link" id="other_link" hidden>
+                    <input type="text" value="" name="other_link" id="other_link" hidden>
+                    <input type="number" value="0" name="score_link" id="score_link" hidden>
+                    <input type="number" value="0" name="score_dock" id="score_dock" hidden>
+                    <input type="number" value="0" name="score_grid" id="score_grid" hidden>
+                    <input type="number" value="0" name="score_total" id="score_total" hidden>
                 </div>
             </div>
             <div class="row mx-2 fixed-bottom">
@@ -633,23 +637,51 @@
         var teleScore = document.getElementsByName('tele_place');
         var autoOut = document.getElementById('auto_score');
         var teleOut = document.getElementById('tele_score');
+        var scoreGrid = document.getElementById('score_grid');
         
         autoOut.value = "";
         teleOut.value = "";
+        scoreGrid.value = 0;
 
         for (var i=0; i<36; i++) {
             if (autoScore[i].checked) {
                 autoOut.value += ((autoOut.value == ""?"":",") + i.toString());
+                switch (parseInt(i/9)) {
+                    case 0:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 6;
+                        break;
+                    case 1:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 4;
+                        break;
+                    case 2:
+                    case 3:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 3;
+                        break;
+                }
             }
             if (teleScore[i].checked) {
                 teleOut.value += ((teleOut.value == ""?"":",") + i.toString());
+                switch (parseInt(i/9)) {
+                    case 0:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 5;
+                        break;
+                    case 1:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 3;
+                        break;
+                    case 2:
+                    case 3:
+                        scoreGrid.value = parseInt(scoreGrid.value) + 2;
+                        break;
+                }
             }
         }
 
         var scoring = new Array(27).fill(false);
         var link = new Array(27).fill(false);
         var otherLink = document.getElementById('other_link');
-        otherLink.value = 0;
+        var scoreLink = document.getElementById('score_link');
+        scoreLink.value = 0;
+        otherLink.value = "";
 
         for (var i=0; i<2; i++) {
             for (var j=0; j<9; j++) {
@@ -658,7 +690,8 @@
                     if (j>1) {
                         if ((scoring[i*9+j] && scoring[i*9+j-1] && scoring[i*9+j-2]) && !(link[i*9+j-1] || link[i*9+j-2])) {
                             link[i*9+j] = true;
-                            otherLink.value = parseInt(otherLink.value) + 1;
+                            scoreLink.value = parseInt(scoreLink.value) + 1;
+                            otherLink.value += (otherLink.value == ""?"":",") + toString(i*9+j);
                         }
                     }
                 }
@@ -670,11 +703,39 @@
                 if (j>1) {
                     if ((scoring[18+j] && scoring[18+j-1] && scoring[18+j-2]) && !(link[18+j-1] || link[18+j-2])) {
                         link[18+j] = true;
-                        otherLink.value = parseInt(otherLink.value) + 1;
+                        scoreLink.value = parseInt(scoreLink.value) + 1;
+                        otherLink.value += (otherLink.value == ""?"":",") + toString(i*9+j);
                     }
                 }
             }
         }
+        scoreLink.value = parseInt(scoreLink.value) *5;
+
+        var scoreDock = document.getElementById('score_dock');
+        scoreDock.value = 0;
+        switch (document.querySelector('input[name="auto_docked"]:checked').value) {
+            case '2':
+                scoreDock.value = parseInt(scoreDock.value) + 8;
+                break;
+            case '3':
+                scoreDock.value = parseInt(scoreDock.value) + 12;
+                break;
+        }
+        switch (document.querySelector('input[name="end_dock"]:checked').value) {
+            case '1':
+                scoreDock.value = parseInt(scoreDock.value) + 2;
+                break;
+            case '2':
+                scoreDock.value = parseInt(scoreDock.value) + 6;
+                break;
+            case '3':
+                scoreDock.value = parseInt(scoreDock.value) + 10;
+                break;
+        }
+
+        var scoreTotal = document.getElementById('score_total');
+        scoreTotal.value = parseInt(scoreDock.value) + parseInt(scoreGrid.value) + parseInt(scoreLink.value);
+
         // console.log(scoring);
         // console.log(link);
         // console.log(otherLink.value);
