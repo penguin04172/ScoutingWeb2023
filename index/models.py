@@ -62,8 +62,8 @@ class MatchData(models.Model):
     
     def score_as_list(self):
         score = [0]*27
-        ascore = list(map(int, self.auto_score.split(',')))
-        tscore = list(map(int, self.tele_score.split(',')))
+        ascore = list(map(int, self.auto_score.split(',') if self.auto_score != '' else []))
+        tscore = list(map(int, self.tele_score.split(',') if self.tele_score != '' else []))
         for i in tscore:
             if i > 26:
                 score[i-9] = 4
@@ -98,8 +98,8 @@ class MatchData(models.Model):
         return pick
     
     def cycle_avg(self):
-        cycleList = list(map(float, self.timer_cycle.split(',')))
-        return round(sum(cycleList)/len(cycleList), 2)
+        cycleList = list(map(float, self.timer_cycle.split(',') if self.timer_cycle != '' else []))
+        return round(sum(cycleList)/(len(cycleList) if len(cycleList)>0 else 1), 2)
     
     def defend_as_list(self):
         return list(map(int, self.tele_defender.split(',')))
