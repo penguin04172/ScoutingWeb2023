@@ -142,6 +142,7 @@ class MatchData(models.Model):
 
 class SuperScout(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
+    scouter = models.CharField(max_length=30, default="")
     quick = models.IntegerField(default=3)
     defence = models.IntegerField(default=3)
     aware = models.IntegerField(default=3)

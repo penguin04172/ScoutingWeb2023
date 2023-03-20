@@ -40,6 +40,7 @@ def ScoutPage(request, event, level, num, side):
     if request.method == 'POST':
         try:
             for i in range(3):
+                scoutList[i].scouter = request.POST.get('scouter')
                 scoutList[i].quick = request.POST.getlist('quick')[i]
                 scoutList[i].defence = request.POST.getlist('defence')[i]
                 scoutList[i].aware = request.POST.getlist('aware')[i]
