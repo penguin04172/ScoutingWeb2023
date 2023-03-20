@@ -304,42 +304,41 @@
                         <tbody>
                             <tr>
                                 <td scope="row" class="bg-cone">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="pickList" id="sub_cone">
-                                        <label class="form-check-label" for="sub_cone">
-                                            Substation Cone
-                                        </label>
+                                    <label class="form-label">Substation Cone</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'subcone')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_pick_sn" id="subcone" readonly>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'subcone')">+</button>
                                     </div>
                                 </td>
                                 <td scope="col" class="bg-cube">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="pickList" id="sub_cube">
-                                        <label class="form-check-label" for="sub_cube">
-                                            Substation Cube
-                                        </label>
+                                    <label class="form-label">Substation Cube</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'subcube')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_pick_sb" id="subcube" readonly>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'subcube')">+</button>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td scope="row" class="bg-cone">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="pickList" id="floor_cone">
-                                        <label class="form-check-label" for="floor_cone">
-                                            Floor Cone
-                                        </label>
+                                    <label class="form-label">Floor Cone</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'floorcone')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_pick_fn" id="floorcone" readonly>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'floorcone')">+</button>
                                     </div>
                                 </td>
                                 <td scope="col" class="bg-cube">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="pickList" id="floor_cube">
-                                        <label class="form-check-label" for="floor_cube">
-                                            Floor Cube
-                                        </label>
+                                    <label class="form-label">Floor Cube</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" onclick="changeValue(this, 'floorcube')">-</button>
+                                        <input class="form-control" type="number" value="0" name="tele_pick_fb" id="floorcube" readonly>
+                                        <button class="btn btn-primary" type="button" onclick="changeValue(this, 'floorcube')">+</button>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
-                        <input type="text" value="" name="tele_pick" id="tele_pick" hidden>
                     </table>
                 </div>
             </div>
@@ -750,12 +749,12 @@
             }
         }
 
-        var pickList = document.getElementsByName('pickList');
-        var pickOut = document.getElementById('tele_pick');
-        pickOut.value = "";
-        for (var i=0; i<4; i++) {
-            pickOut.value += pickList[i].checked?"1":"0";
-        }
+        // var pickList = document.getElementsByName('pickList');
+        // var pickOut = document.getElementById('tele_pick');
+        // pickOut.value = "";
+        // for (var i=0; i<4; i++) {
+        //     pickOut.value += pickList[i].checked?"1":"0";
+        // }
 
         return true;
     }

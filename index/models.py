@@ -16,7 +16,7 @@ class Match(models.Model):
     teams = models.TextField(default="")
     score_blue = models.IntegerField(default=0)
     score_red = models.IntegerField(default=0)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='matches')
 
     def teams_as_list(self):
         return self.teams.split(',')
@@ -42,11 +42,30 @@ class SystemScoring(models.Model):
     rank = models.IntegerField(default=0)
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="sysScore")
 
+class Team(models.Model):
+    id = models.CharField(max_length=30, primary_key=True, unique=True)
+    num = models.IntegerField(default=0)
+    score_highest = models.IntegerField(default=0)
+    score_rank = models.IntegerField(default=0)
+    score_opr = models.IntegerField(default=0)
+    auto_start = models.IntegerField(default=0)
+    auto_hihgest = models.IntegerField(default=0)
+    auto_dock = models.IntegerField(default=0)
+    auto_engage = models.IntegerField(default=0)
+    tele_highest = models.IntegerField(default=0)
+    tele_pick = models.IntegerField(default=0)
+    tele_top = models.IntegerField(default=0)
+    tele_mid = models.IntegerField(default=0)
+    tele_bot = models.IntegerField(default=0)
+    tele_cycle = models.FloatField(default=0)
+    tele_dock_time = models.FloatField(default=0)
+    tele_enga_time = models.FloatField(default=0)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
-    scouter = models.CharField(max_length=30, default="")
     team = models.IntegerField(default=0)
+    scouter = models.CharField(max_length=30, default="")
     robot = models.IntegerField(default=0)
     start = models.IntegerField(default=0)
     auto_score = models.TextField(default="")
@@ -59,7 +78,10 @@ class MatchData(models.Model):
     tele_trans = models.IntegerField(default=0)
     tele_fed = models.BooleanField(default=False)
     tele_defender = models.CharField(max_length=15, default="")
-    tele_pick = models.CharField(max_length=4, default="0000")
+    tele_pick_fn = models.IntegerField(default=0)
+    tele_pick_fb = models.IntegerField(default=0)
+    tele_pick_sn = models.IntegerField(default=0)
+    tele_pick_sb = models.IntegerField(default=0)
     tele_fail = models.IntegerField(default=0)
     timer_dock = models.TextField(default="")
     end_dock = models.IntegerField(default=0)
@@ -71,6 +93,7 @@ class MatchData(models.Model):
     score_dock = models.IntegerField(default=0)
     score_grid = models.IntegerField(default=0)
     score_total = models.IntegerField(default=0)
+    team_data = models.ForeignKey(Team, on_delete=models.CASCADE, null=True, default=None)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
 
     def robot_as_str(self):
@@ -106,13 +129,7 @@ class MatchData(models.Model):
         dock.append('None (0)' if self.auto_docked==0 else ('Docked (8)' if self.auto_docked==2 else 'Engaged (12)'))
         dock.append('None (0)' if self.end_dock==0 else ('Parked (2)' if self.end_dock==1 else ('Docked (6)' if self.end_dock==2 else 'Engaged (10)')))
         return dock
-    
-    def pick_as_list(self):
-        pick = []
-        for i in range(4):
-            pick.append(self.tele_pick[i] == "1")
-        return pick
-    
+        
     def cycle_avg(self):
         cycleList = list(map(float, self.timer_cycle.split(',') if self.timer_cycle != '' else []))
         return round(sum(cycleList)/(len(cycleList) if len(cycleList)>0 else 1), 2)

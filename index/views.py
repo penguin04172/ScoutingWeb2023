@@ -74,6 +74,9 @@ def RecordPage(request, event, level, num, robot):
         if request.method == 'POST':
             record = MatchData.objects.get(id=request.POST.get('id'))
 
+            if (Team.objects.filter(id=f'{event}_{request.POST.get("team")}').first() != None):
+                record.team_data.id = f'{event}_{request.POST.get("team")}'
+
             record.scouter = request.POST.get('scouter')
             record.team = int(request.POST.get('team'))
             record.robot = int(request.POST.get('robot'))
@@ -88,7 +91,10 @@ def RecordPage(request, event, level, num, robot):
             record.tele_trans = int(request.POST.get('tele_trans'))
             record.tele_fed = request.POST.get('tele_fed')!=None
             record.tele_defender = request.POST.get('tele_defender')
-            record.tele_pick = request.POST.get('tele_pick')
+            record.tele_pick_sn = request.POST.get('tele_pick_sn')
+            record.tele_pick_fn = request.POST.get('tele_pick_fn')
+            record.tele_pick_sb = request.POST.get('tele_pick_sb')
+            record.tele_pick_fb = request.POST.get('tele_pick_fb')
             record.tele_fail = int(request.POST.get('tele_fail'))
             record.timer_dock = request.POST.get('timer_dock')
             record.end_dock = int(request.POST.get('end_dock'))
