@@ -172,3 +172,20 @@ class MatchViewSet(viewsets.ModelViewSet):
         
         return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')
     
+
+class TeamViewSet(viewsets.ModelViewSet):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+
+    def create(self, request, *args, **kwargs):
+        teamId = f'{request.POST.get("event_id")}_{request.POST.get("num")}'
+        Team.objects.create(
+            id = teamId,
+            num = int(request.POST.get('num'))
+        )
+        matchList = Match.objects.filter(event_id=request.POST.get('event_id')).all()
+        for match in matchList:
+            if request.POST.get('num') in match.teams:
+               pass                                                                                                                                                                                                                                                                                                                                                                                    
+
+        return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')

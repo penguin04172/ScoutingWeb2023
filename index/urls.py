@@ -20,6 +20,7 @@ from .views import *
 router = DefaultRouter()
 router.register('events', EventViewSet, basename='event')
 router.register('match', MatchViewSet, basename='match')
+router.register('team', TeamViewSet, basename='team')
 
 urlpatterns = [
     path('', MainPage),
