@@ -71,6 +71,18 @@ class Team(models.Model):
     end_dock_time = models.FloatField(default=0)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
+    def recaculate(self):
+        dataList = {
+            'total': [],
+            'auto': [],
+            'tele': []
+        }
+        for data in self.scores.all():
+            dataList['total'].append(data.score_total)
+            dataList['auto'].append(data.score_auto)
+            dataList['tele'].append(data.score_tele)
+        return self
+
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
     team = models.IntegerField(default=0)
@@ -98,11 +110,13 @@ class MatchData(models.Model):
     other_immobolity = models.BooleanField(default=False)
     other_tippy = models.BooleanField(default=False)
     other_comment = models.TextField(default="")
+    score_auto = models.IntegerField(default=0)
+    score_tele = models.IntegerField(default=0)
     score_link = models.IntegerField(default=0)
     score_dock = models.IntegerField(default=0)
     score_grid = models.IntegerField(default=0)
     score_total = models.IntegerField(default=0)
-    team_data = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, default=None)
+    team_data = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, default=None, related_name='scores')
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='scores')
 
     def robot_as_str(self):
@@ -160,7 +174,8 @@ class SuperScout(models.Model):
     place = models.IntegerField(default=3)
     foul = models.CharField(max_length=100, default="")
     other = models.CharField(max_length=100, default="")
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, default=None, related_name='scouts')
+    match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='scouts')
 
     class Meta:
         ordering = ['id']

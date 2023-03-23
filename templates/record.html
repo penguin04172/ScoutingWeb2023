@@ -498,6 +498,8 @@
                         </tbody>
                     </table>
                     <input type="text" value="" name="other_link" id="other_link" hidden>
+                    <input type="number" value="0" name="score_link" id="score_auto" hidden>
+                    <input type="number" value="0" name="score_link" id="score_tele" hidden>
                     <input type="number" value="0" name="score_link" id="score_link" hidden>
                     <input type="number" value="0" name="score_dock" id="score_dock" hidden>
                     <input type="number" value="0" name="score_grid" id="score_grid" hidden>
@@ -637,6 +639,8 @@
         var autoOut = document.getElementById('auto_score');
         var teleOut = document.getElementById('tele_score');
         var scoreGrid = document.getElementById('score_grid');
+        var scoreAuto = document.getElementById('score_auto');
+        var scoreTele = document.getElementById('score_tele');
         
         autoOut.value = "";
         teleOut.value = "";
@@ -648,13 +652,16 @@
                 switch (parseInt(i/9)) {
                     case 0:
                         scoreGrid.value = parseInt(scoreGrid.value) + 6;
+                        scoreAuto.value = parseInt(scoreAuto.value) + 6;
                         break;
                     case 1:
                         scoreGrid.value = parseInt(scoreGrid.value) + 4;
+                        scoreAuto.value = parseInt(scoreAuto.value) + 4;
                         break;
                     case 2:
                     case 3:
                         scoreGrid.value = parseInt(scoreGrid.value) + 3;
+                        scoreAuto.value = parseInt(scoreAuto.value) + 3;
                         break;
                 }
             }
@@ -663,13 +670,16 @@
                 switch (parseInt(i/9)) {
                     case 0:
                         scoreGrid.value = parseInt(scoreGrid.value) + 5;
+                        scoreTele.value = parseInt(scoreTele.value) + 5;
                         break;
                     case 1:
                         scoreGrid.value = parseInt(scoreGrid.value) + 3;
+                        scoreTele.value = parseInt(scoreTele.value) + 3;
                         break;
                     case 2:
                     case 3:
                         scoreGrid.value = parseInt(scoreGrid.value) + 2;
+                        scoreTele.value = parseInt(scoreTele.value) + 2;
                         break;
                 }
             }
@@ -715,25 +725,32 @@
         switch (document.querySelector('input[name="auto_docked"]:checked').value) {
             case '2':
                 scoreDock.value = parseInt(scoreDock.value) + 8;
+                scoreAuto.value = parseInt(scoreAuto.value) + 8;
                 break;
             case '3':
                 scoreDock.value = parseInt(scoreDock.value) + 12;
+                scoreAuto.value = parseInt(scoreAuto.value) + 12;
                 break;
         }
+        
         switch (document.querySelector('input[name="end_dock"]:checked').value) {
             case '1':
                 scoreDock.value = parseInt(scoreDock.value) + 2;
+                scoreTele.value = parseInt(scoreTele.value) + 2;
                 break;
             case '2':
                 scoreDock.value = parseInt(scoreDock.value) + 6;
+                scoreTele.value = parseInt(scoreTele.value) + 6;
                 break;
             case '3':
                 scoreDock.value = parseInt(scoreDock.value) + 10;
+                scoreTele.value = parseInt(scoreTele.value) + 10;
                 break;
         }
-
+        var scoreMobility = document.getElementById('mobility').checked?3:0;
+        scoreAuto.value = parseInt(scoreAuto.value) + parseInt(scoreMobility);
         var scoreTotal = document.getElementById('score_total');
-        scoreTotal.value = parseInt(scoreDock.value) + parseInt(scoreGrid.value) + parseInt(scoreLink.value);
+        scoreTotal.value = parseInt(scoreDock.value) + parseInt(scoreGrid.value) + parseInt(scoreLink.value) + parseInt(scoreMobility);
 
         // console.log(scoring);
         // console.log(link);

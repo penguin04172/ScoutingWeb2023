@@ -178,14 +178,25 @@ class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
 
     def create(self, request, *args, **kwargs):
-        teamId = f'{request.POST.get("event_id")}_{request.POST.get("num")}'
-        Team.objects.create(
+        teamNum = request.POST.get('num')
+        teamId = f'{request.POST.get("event_id")}_{teamNum}'
+        team = Team.objects.create(
             id = teamId,
-            num = int(request.POST.get('num'))
+            num = int(teamNum)
         )
+
         matchList = Match.objects.filter(event_id=request.POST.get('event_id')).all()
         for match in matchList:
-            if request.POST.get('num') in match.teams:
-               pass                                                                                                                                                                                                                                                                                                                                                                                    
+            teams = match.teams.split(',')
+            if teamNum in teams:
+                teamIdx = teams.index(teamNum)
+
+                score = list(match.scores.all())[teamIdx]
+                score.team_data = team
+                score.save()
+
+                scout = list(match.scouts.all())[teamIdx]
+                scout.team = team
+                score.save()
 
         return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')
