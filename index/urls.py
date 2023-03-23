@@ -28,5 +28,6 @@ urlpatterns = [
     path('data/<str:event>/<int:level>/<int:num>/', MatchPage),
     path('data/<str:event>/<int:level>/<int:num>/<int:robot>/', RecordPage),
     path('data/<str:event>/<int:level>/<int:num>/<str:side>/', ScoutPage),
+    path('data/<str:event>/team/<int:num>/', TeamPage),
     path('api/', include(router.urls)),
 ]

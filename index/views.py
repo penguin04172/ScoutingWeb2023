@@ -16,10 +16,26 @@ def EventPage(request, event):
         return HttpResponseRedirect('/')
     eventData = Event.objects.get(id=event)
     matchList = list(Match.objects.filter(event_id=event).all())
+    teamList = list(Team.objects.filter(event_id=event).all())
     return render(request, 'event.html', {
         'selEvent': event,
         'eventData': eventData,
         'matchList': matchList,
+        'teamList': teamList
+    })
+
+def TeamPage(request, event, num):
+    teamData = Team.objects.get(id=f'{event}_{num}')
+    scoreData = {
+        'scoreList': [],
+        'rankList': [],
+        'oprList': [],
+        'autoList': [],
+        'startList': [],
+        'teleList': [],
+    }
+    return render(request, 'team.html', {
+        'teamData': teamData,
     })
 
 def MatchPage(request, event, level, num):
@@ -87,7 +103,7 @@ def RecordPage(request, event, level, num, robot):
             record.cross_cable = request.POST.get('cross_cable')!=None
             record.cross_charge = request.POST.get('cross_charge')!=None
             record.auto_mobility = request.POST.get('auto_mobility')!=None
-            record.auto_docked = int(request.POST.get('auto_docked'))
+            record.auto_dock = int(request.POST.get('auto_dock'))
             record.timer_cycle = request.POST.get('timer_cycle')
             record.tele_trans = int(request.POST.get('tele_trans'))
             record.tele_fed = request.POST.get('tele_fed')!=None
@@ -103,6 +119,8 @@ def RecordPage(request, event, level, num, robot):
             record.other_immobolity = request.POST.get('other_immobolity')!=None
             record.other_tippy = request.POST.get('other_tippy')!=None
             record.other_comment = request.POST.get('other_comment')
+            record.score_auto = int(request.POST.get('score_auto'))
+            record.score_tele = int(request.POST.get('score_tele'))
             record.score_link = int(request.POST.get('score_link'))
             record.score_dock = int(request.POST.get('score_dock'))
             record.score_grid = int(request.POST.get('score_grid'))
@@ -182,7 +200,9 @@ class TeamViewSet(viewsets.ModelViewSet):
         teamId = f'{request.POST.get("event_id")}_{teamNum}'
         team = Team.objects.create(
             id = teamId,
-            num = int(teamNum)
+            num = int(teamNum),
+            name = request.POST.get('name'),
+            event_id = request.POST.get('event_id')
         )
 
         matchList = Match.objects.filter(event_id=request.POST.get('event_id')).all()

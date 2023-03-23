@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Scouting {{selEvent}}{% endblock title %}
+{% block nav %}{% include 'nav.html' %}{% endblock nav %}
+{% block container %}
+<div class="container">
+    <div class="row mb-1 justify-content-center">
+        <h5>OverView</h5>
+        <div class="col col-lg-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">Highest Score</th>
+                        <th scope="col">Average Score</th>
+                        <th scope="col">OPR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="row"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock container %}
+{% block script %}
+<script>
+
+</script>
+{% endblock script %}

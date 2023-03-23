@@ -14,8 +14,6 @@ class Match(models.Model):
     level = models.IntegerField(default=0)
     num = models.IntegerField(default=0)
     teams = models.TextField(default="")
-    score_blue = models.IntegerField(default=0)
-    score_red = models.IntegerField(default=0)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='matches')
 
     def teams_as_list(self):
@@ -45,6 +43,7 @@ class SystemScoring(models.Model):
 class Team(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
     num = models.IntegerField(default=0)
+    name = models.CharField(max_length=60, default="")
     score_max = models.IntegerField(default=0)
     score_avg = models.FloatField(default=0)
     score_rank = models.IntegerField(default=0)
@@ -71,17 +70,6 @@ class Team(models.Model):
     end_dock_time = models.FloatField(default=0)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
-    def recaculate(self):
-        dataList = {
-            'total': [],
-            'auto': [],
-            'tele': []
-        }
-        for data in self.scores.all():
-            dataList['total'].append(data.score_total)
-            dataList['auto'].append(data.score_auto)
-            dataList['tele'].append(data.score_tele)
-        return self
 
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
@@ -94,7 +82,7 @@ class MatchData(models.Model):
     cross_cable = models.BooleanField(default=False)
     cross_charge = models.BooleanField(default=False)
     auto_mobility = models.BooleanField(default=False)
-    auto_docked = models.IntegerField(default=0)
+    auto_dock = models.IntegerField(default=0)
     timer_cycle = models.TextField(default="")
     tele_trans = models.IntegerField(default=0)
     tele_fed = models.BooleanField(default=False)

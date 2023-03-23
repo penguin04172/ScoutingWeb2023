@@ -87,14 +87,14 @@
                         <h5 class="modal-title" id="addTeamLabel">Add New Team</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form action="/team/" method="POST">
+                    <form action="/api/team/" method="POST">
                         {% csrf_token %}
                         <div class="modal-body">
                             <div class="input-group mt-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">ID: </span>
                                 </div>
-                                <input type="text" class="form-control" name="id" id="id" required>
+                                <input type="text" class="form-control" name="num" id="num" required>
                             </div>
                             <div class="input-group mt-3">
                                 <div class="input-group-prepend">
@@ -104,6 +104,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <input type="text" name="event_id" value="{{selEvent}}" hidden>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="Submit" class="btn btn-primary">Submit</button>
                         </div>
@@ -169,7 +170,7 @@
                 <tbody>
                     {% for team in teamList %}
                     <tr>
-                        <th scope="row"><a href="/team?id={{team.id}}">{{team.id}}</a></th>
+                        <th scope="row"><a href="/data/{{team.event_id}}/team/{{team.num}}/">{{team.num}}</a></th>
                         <td>{{team.name}}</td>
                     </tr>
                     {% endfor %}
