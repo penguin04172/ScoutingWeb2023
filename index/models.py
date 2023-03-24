@@ -29,6 +29,12 @@ class Match(models.Model):
         else:
             return 'Other'
         
+class Team(models.Model):
+    id = models.CharField(max_length=30, primary_key=True, unique=True)
+    num = models.IntegerField(default=0)
+    name = models.CharField(max_length=60, default="")
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+        
 class SystemScoring(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
     red = models.BooleanField(default=False)
@@ -38,37 +44,9 @@ class SystemScoring(models.Model):
     penalty = models.IntegerField(default=0)
     total = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+    team = models.ManyToManyField(Team, related_name="sysScore")
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="sysScore")
 
-class Team(models.Model):
-    id = models.CharField(max_length=30, primary_key=True, unique=True)
-    num = models.IntegerField(default=0)
-    name = models.CharField(max_length=60, default="")
-    score_max = models.IntegerField(default=0)
-    score_avg = models.FloatField(default=0)
-    score_rank = models.IntegerField(default=0)
-    score_opr = models.IntegerField(default=0)
-    auto_start = models.IntegerField(default=0)
-    auto_max = models.IntegerField(default=0)
-    auto_avg = models.FloatField(default=0)
-    auto_top = models.IntegerField(default=0)
-    auto_mid = models.IntegerField(default=0)
-    auto_bot = models.IntegerField(default=0)
-    auto_dock = models.IntegerField(default=0)
-    auto_engage = models.IntegerField(default=0)
-    tele_max = models.IntegerField(default=0)
-    tele_avg = models.FloatField(default=0)
-    tele_cycle = models.FloatField(default=0)
-    tele_src = models.IntegerField(default=0)
-    tele_pick = models.IntegerField(default=0)
-    tele_top = models.IntegerField(default=0)
-    tele_mid = models.IntegerField(default=0)
-    tele_bot = models.IntegerField(default=0)
-    tele_success = models.FloatField(default=0)
-    end_dock = models.IntegerField(default=0)
-    end_engage = models.IntegerField(default=0)
-    end_dock_time = models.FloatField(default=0)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
 
 class MatchData(models.Model):
@@ -77,8 +55,8 @@ class MatchData(models.Model):
     scouter = models.CharField(max_length=30, default="")
     robot = models.IntegerField(default=0)
     start = models.IntegerField(default=0)
-    auto_score = models.TextField(default="")
-    tele_score = models.TextField(default="")
+    auto_grid = models.TextField(default="")
+    tele_grid = models.TextField(default="")
     cross_cable = models.BooleanField(default=False)
     cross_charge = models.BooleanField(default=False)
     auto_mobility = models.BooleanField(default=False)
@@ -110,30 +88,30 @@ class MatchData(models.Model):
     def robot_as_str(self):
         return f'Red {self.robot-2}' if self.robot>2 else f'Blue {self.robot+1}'
     
-    def score_as_list(self):
-        score = [0]*27
-        ascore = list(map(int, self.auto_score.split(',') if self.auto_score != '' else []))
-        tscore = list(map(int, self.tele_score.split(',') if self.tele_score != '' else []))
-        for i in tscore:
+    def grid_as_list(self):
+        grid = [0]*27
+        agrid = list(map(int, self.auto_grid.split(',') if self.auto_grid != '' else []))
+        tgrid = list(map(int, self.tele_grid.split(',') if self.tele_grid != '' else []))
+        for i in tgrid:
             if i > 26:
-                score[i-9] = 4
+                grid[i-9] = 4
             elif i > 18:
-                score[i] = 3
+                grid[i] = 3
             elif i%3 == 1:
-                score[i] = 4
+                grid[i] = 4
             else:
-                score[i] = 3
+                grid[i] = 3
                 
-        for i in ascore:
+        for i in agrid:
             if i > 26:
-                score[i-9] = 2
+                grid[i-9] = 2
             elif i > 18:
-                score[i] = 1
+                grid[i] = 1
             elif i%3 == 1:
-                score[i] = 2
+                grid[i] = 2
             else:
-                score[i] = 1
-        return score
+                grid[i] = 1
+        return grid
 
     def dock_as_list(self):
         dock = []
@@ -145,9 +123,20 @@ class MatchData(models.Model):
         cycleList = list(map(float, self.timer_cycle.split(',') if self.timer_cycle != '' else []))
         return round(sum(cycleList)/(len(cycleList) if len(cycleList)>0 else 1), 2)
     
+    def cycle_as_list(self):
+        return list(map(float, self.timer_cycle.split(',') if self.timer_cycle != '' else []))
+    
     def defend_as_list(self):
         return list(map(int, self.tele_defender.split(',')))
 
+    def pick_as_dict(self):
+        return {
+            'floorCone': self.tele_pick_fn,
+            'floorCube': self.tele_pick_fb,
+            'stationCone': self.tele_pick_sn,
+            'stationCube': self.tele_pick_sb,
+        }
+    
     class Meta:
         ordering = ['id']
 

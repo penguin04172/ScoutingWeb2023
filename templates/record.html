@@ -135,7 +135,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <input type="text" value="" name="auto_score" id="auto_score" hidden>
+                    <input type="text" value="" name="auto_grid" id="auto_grid" hidden>
                 </div>
             </div>
             <div class="row mb-1 justify-content-center">
@@ -236,7 +236,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <input type="text" value="" name="tele_score" id="tele_score" hidden>
+                    <input type="text" value="" name="tele_grid" id="tele_grid" hidden>
                 </div>
             </div>
             <div class="row mb-1 justify-content-center">
@@ -498,8 +498,8 @@
                         </tbody>
                     </table>
                     <input type="text" value="" name="other_link" id="other_link" hidden>
-                    <input type="number" value="0" name="score_link" id="score_auto" hidden>
-                    <input type="number" value="0" name="score_link" id="score_tele" hidden>
+                    <input type="number" value="0" name="score_auto" id="score_auto" hidden>
+                    <input type="number" value="0" name="score_tele" id="score_tele" hidden>
                     <input type="number" value="0" name="score_link" id="score_link" hidden>
                     <input type="number" value="0" name="score_dock" id="score_dock" hidden>
                     <input type="number" value="0" name="score_grid" id="score_grid" hidden>
@@ -636,8 +636,8 @@
     function checkForm() {
         var autoScore = document.getElementsByName('auto_place');
         var teleScore = document.getElementsByName('tele_place');
-        var autoOut = document.getElementById('auto_score');
-        var teleOut = document.getElementById('tele_score');
+        var autoOut = document.getElementById('auto_grid');
+        var teleOut = document.getElementById('tele_grid');
         var scoreGrid = document.getElementById('score_grid');
         var scoreAuto = document.getElementById('score_auto');
         var scoreTele = document.getElementById('score_tele');
@@ -700,7 +700,7 @@
                         if ((scoring[i*9+j] && scoring[i*9+j-1] && scoring[i*9+j-2]) && !(link[i*9+j-1] || link[i*9+j-2])) {
                             link[i*9+j] = true;
                             scoreLink.value = parseInt(scoreLink.value) + 1;
-                            otherLink.value += (otherLink.value == ""?"":",") + toString(i*9+j);
+                            otherLink.value += (otherLink.value == ""?"":",") + (i*9+j);
                         }
                     }
                 }
@@ -713,7 +713,7 @@
                     if ((scoring[18+j] && scoring[18+j-1] && scoring[18+j-2]) && !(link[18+j-1] || link[18+j-2])) {
                         link[18+j] = true;
                         scoreLink.value = parseInt(scoreLink.value) + 1;
-                        otherLink.value += (otherLink.value == ""?"":",") + toString(i*9+j);
+                        otherLink.value += (otherLink.value == ""?"":",") + (18+j);
                     }
                 }
             }

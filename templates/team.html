@@ -11,13 +11,37 @@
                     <tr>
                         <th scope="col">Highest Score</th>
                         <th scope="col">Average Score</th>
+                        <th scope="col">RP / RS</th>
                         <th scope="col">OPR</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td scope="row"></td>
+                        <td scope="row">{{overview.scoreMax}}</td>
+                        <td>{{overview.scoreAvg}}</td>
+                        <td>{{overview.rp}} / {{overview.rs}}</td>
+                        <td>{{overview.opr}}</td>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-1 justify-content-center">
+        <h5>Auto</h5>
+        <div class="col col-lg-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, data in scoreData.items %}
+                    <tr>
+                        <td>{{key}}</td>
+                        <td>{{data}}</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

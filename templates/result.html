@@ -30,7 +30,7 @@
                 <table class="table table-bordered align-middle text-center border-dark">
                     <tbody>
                         <tr>
-                            {% for s in scoreData.score_as_list|slice:"0:9" %}
+                            {% for s in scoreData.grid_as_list|slice:"0:9" %}
                                 <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
                                     {% if s > 0 %}
                                         {% if s|divisibleby:2 %}
@@ -45,7 +45,7 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            {% for s in scoreData.score_as_list|slice:"9:18" %}
+                            {% for s in scoreData.grid_as_list|slice:"9:18" %}
                                 <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
                                     {% if s > 0 %}
                                         {% if s|divisibleby:2 %}
@@ -60,7 +60,7 @@
                             {% endfor %}
                         </tr>
                         <tr>
-                            {% for s in scoreData.score_as_list|slice:"18:27" %}
+                            {% for s in scoreData.grid_as_list|slice:"18:27" %}
                                 <td class="bg-light">
                                     {% if s > 0 %}
                                         {% if s|divisibleby:2 %}

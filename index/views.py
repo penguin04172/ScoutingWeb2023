@@ -26,16 +26,81 @@ def EventPage(request, event):
 
 def TeamPage(request, event, num):
     teamData = Team.objects.get(id=f'{event}_{num}')
-    scoreData = {
+    overview = {
+        'scoreMax': 0,
+        'scoreAvg': 0,
+        'rp': 0,
+        'rs': 0,
+        'opr': 0
+    }
+    allData = {
         'scoreList': [],
         'rankList': [],
         'oprList': [],
         'autoList': [],
         'startList': [],
         'teleList': [],
+        'gridList': [],
+        'pickList': [],
+        'autoDockList': [],
+        'teleDockList': [],
+        'cycleList': [],
+        'dockTimerList': [],
+        'autoPlaceList': [[], [], []],
+        'telePlaceList': [[], [], []],
     }
+    scoreData = {
+        'autoMax': 0,
+        'autoAvg': 0,
+        'autoPlace': [0, 0, 0],
+        'autoDock': [0, 0, 0],
+        'teleMax': 0,
+        'teleAvg': 0,
+        'teleCycle': 0,
+        'telePickMax': 0,
+        'telePlaceMax': [0, 0, 0],
+        'telePlaceAvg': [0, 0, 0],
+        'telePlaceSuc': [0, 0, 0],
+        'teleDock': [0, 0, 0, 0],
+        'teleDockTime': 0,
+    }
+
+    for score in teamData.scores.all():
+        allData['scoreList'].append(score.score_total)
+        allData['startList'].append(score.auto_start)
+        allData['autoList'].append(score.score_auto)
+        allData['teleList'].append(score.score_tele)
+        allData['gridList'].append(score.grid_as_list())
+        allData['pickList'].append(score.pick_as_dict())
+        allData['autoDockList'].append(score.auto_dock)
+        allData['teleDockList'].append(score.tele_dock)
+        allData['cycleList'].extend(score.cycle_as_list())
+        allData['dockTimerList'].append(float(score.timer_dock))
+
+    for sys in teamData.sysScore.all():
+        allData['rankList'].append(sys.rank)
+
+    for grid in allData['gridList']:
+        for i in range(3):
+            allData['autoPlaceList'][i].append(grid[i*9:i*9+9].count(1) + grid[i*9:i*9+9].count(2))
+            allData['telePlaceList'][i].append(grid[i*9:i*9+9].count(3) + grid[i*9:i*9+9].count(4))
+    
+    overview['scoreMax'] = sum(allData['scoreList'])
+    overview['scoreAvg'] = sum(allData['scoreList']) / len(allData['scoreList'])
+    overview['rp'] = sum(allData['rankList'])
+    overview['rs'] = sum(allData['rankList']) / len(allData['rankList'])
+    
+    scoreData['autoMax'] = max(allData['autoList'])
+    scoreData['autoAvg'] = sum(allData['autoList'])/len(allData['autoList'])
+    scoreData['teleMax'] = max(allData['teleList'])
+    scoreData['teleAvg'] = sum(allData['teleList'])/len(allData['teleList'])
+
+
+
     return render(request, 'team.html', {
         'teamData': teamData,
+        'overview': overview,
+        'scoreData': scoreData
     })
 
 def MatchPage(request, event, level, num):
@@ -47,15 +112,22 @@ def ScoutPage(request, event, level, num, side):
     matchData = Match.objects.get(id=f'{event}_{level}_{num}')
     scoutList = list(SuperScout.objects.filter(match_id=f'{event}_{level}_{num}').all())
     systemData = SystemScoring.objects.get(id=f'{event}_{level}_{num}_{side}')
+    teamList = matchData.teams_as_list()
 
     if side == 'blue':
         scoutList = scoutList[0:3]
+        teamList = teamList[0:3]
     elif side == 'red':
         scoutList = scoutList[3:6]
+        teamList = teamList[3:6]
 
     if request.method == 'POST':
         try:
             for i in range(3):
+                team = Team.objects.filter(id=f'{event}_{teamList[i]}').first()
+                if (team != None):
+                    scoutList[i].team = team
+                    systemData.team.add(team)
                 scoutList[i].scouter = request.POST.get('scouter')
                 scoutList[i].quick = request.POST.getlist('quick')[i]
                 scoutList[i].defence = request.POST.getlist('defence')[i]
@@ -98,8 +170,8 @@ def RecordPage(request, event, level, num, robot):
             record.team = int(request.POST.get('team'))
             record.robot = int(request.POST.get('robot'))
             record.start = int(request.POST.get('start'))
-            record.auto_score = request.POST.get('auto_score')
-            record.tele_score = request.POST.get('tele_score')
+            record.auto_grid = request.POST.get('auto_grid')
+            record.tele_grid = request.POST.get('tele_grid')
             record.cross_cable = request.POST.get('cross_cable')!=None
             record.cross_charge = request.POST.get('cross_charge')!=None
             record.auto_mobility = request.POST.get('auto_mobility')!=None
