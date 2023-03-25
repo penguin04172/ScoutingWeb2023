@@ -27,6 +27,7 @@ def EventPage(request, event):
 def TeamPage(request, event, num):
     teamData = Team.objects.get(id=f'{event}_{num}')
     overview = {
+        'matchCount': 0,
         'scoreMax': 0,
         'scoreAvg': 0,
         'rp': 0,
@@ -67,13 +68,13 @@ def TeamPage(request, event, num):
 
     for score in teamData.scores.all():
         allData['scoreList'].append(score.score_total)
-        allData['startList'].append(score.auto_start)
+        allData['startList'].append(score.start)
         allData['autoList'].append(score.score_auto)
         allData['teleList'].append(score.score_tele)
         allData['gridList'].append(score.grid_as_list())
         allData['pickList'].append(score.pick_as_dict())
         allData['autoDockList'].append(score.auto_dock)
-        allData['teleDockList'].append(score.tele_dock)
+        allData['teleDockList'].append(score.end_dock)
         allData['cycleList'].extend(score.cycle_as_list())
         allData['dockTimerList'].append(float(score.timer_dock))
 
@@ -85,10 +86,11 @@ def TeamPage(request, event, num):
             allData['autoPlaceList'][i].append(grid[i*9:i*9+9].count(1) + grid[i*9:i*9+9].count(2))
             allData['telePlaceList'][i].append(grid[i*9:i*9+9].count(3) + grid[i*9:i*9+9].count(4))
     
-    overview['scoreMax'] = sum(allData['scoreList'])
+    overview['matchCount'] = teamData.scores.all().count()
+    overview['scoreMax'] = max(allData['scoreList'])
     overview['scoreAvg'] = sum(allData['scoreList']) / len(allData['scoreList'])
     overview['rp'] = sum(allData['rankList'])
-    overview['rs'] = sum(allData['rankList']) / len(allData['rankList'])
+    overview['rs'] = sum(allData['rankList']) / (len(allData['rankList']) if len(allData['rankList']) else 1)
     
     scoreData['autoMax'] = max(allData['autoList'])
     scoreData['autoAvg'] = sum(allData['autoList'])/len(allData['autoList'])

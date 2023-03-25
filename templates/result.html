@@ -7,7 +7,6 @@
         <div class="row mt-3 text-center">
             <h3 id="title1">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
             <h4 id="title2">{{scoreData.robot_as_str}} - {{scoreData.team}}</h4>
-            <h4 id="title3">Scouter: {{scoreData.scouter}}</h4>
         </div>
         <div class="row mb-3">
             <nav aria-label="Page navigation">
@@ -85,6 +84,10 @@
                 <table class="table table-bordered text-center align-middle">
                     <tbody>
                         <tr>
+                            <th>Scouter</th>
+                            <th colspan="2">{{scoreData.scouter}}</th>
+                        </tr>
+                        <tr>
                             <th>Docked</th>
                             <td>Auto: {{scoreData.dock_as_list.0}}</td>
                             <td>End: {{scoreData.dock_as_list.1}}</td>
@@ -108,7 +111,7 @@
                             <td colspan="2">{{scoreData.timer_cycle}} (Avg: {{scoreData.cycle_avg}})</td>
                         </tr>
                         <tr>
-                            <th>Self Link</th>
+                            <th>Self Link (Place)</th>
                             <td colspan="2">{{scoreData.other_link}}</td>
                         </tr>
                         <tr>
@@ -157,6 +160,10 @@
                 <table class="table table-bordered text-center">
                     <tbody>
                         <tr>
+                            <th>Scouter</th>
+                            <th colspan="2">{{scoutData.scouter}}</th>
+                        </tr>
+                        <tr>
                             <th>Quickness</th>
                             <td>{{scoutData.quick}}</td>
                         </tr>
@@ -197,7 +204,7 @@
 {% endblock container %}
 {% block script %}
 <script>
-    var showPage = document.getElementById('result');
+    var showPage = document.getElementsByName('page')[0];
     function changePage(e) {
         showPage.className = "d-none";
         var page = document.getElementById(e.innerText.toLowerCase());

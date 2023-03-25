@@ -48,7 +48,6 @@ class SystemScoring(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="sysScore")
 
 
-
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
     team = models.IntegerField(default=0)
@@ -82,6 +81,7 @@ class MatchData(models.Model):
     score_dock = models.IntegerField(default=0)
     score_grid = models.IntegerField(default=0)
     score_total = models.IntegerField(default=0)
+    score_opr = models.FloatField(default=0)
     team_data = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, default=None, related_name='scores')
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='scores')
 
@@ -115,7 +115,7 @@ class MatchData(models.Model):
 
     def dock_as_list(self):
         dock = []
-        dock.append('None (0)' if self.auto_docked==0 else ('Docked (8)' if self.auto_docked==2 else 'Engaged (12)'))
+        dock.append('None (0)' if self.auto_dock==0 else ('Docked (8)' if self.auto_dock==2 else 'Engaged (12)'))
         dock.append('None (0)' if self.end_dock==0 else ('Parked (2)' if self.end_dock==1 else ('Docked (6)' if self.end_dock==2 else 'Engaged (10)')))
         return dock
         

@@ -22,7 +22,7 @@
 </header>
 <div class="container">
 
-    <form action="./" method="post" onsubmit="return checkForm()">
+    <form action="./" method="post" onsubmit="return checkForm();">
         {% csrf_token %}
         <!-- Basic -->
         <div class="d-block" name="page" id="basic">
@@ -722,7 +722,7 @@
 
         var scoreDock = document.getElementById('score_dock');
         scoreDock.value = 0;
-        switch (document.querySelector('input[name="auto_docked"]:checked').value) {
+        switch (document.querySelector('input[name="auto_dock"]:checked').value) {
             case '2':
                 scoreDock.value = parseInt(scoreDock.value) + 8;
                 scoreAuto.value = parseInt(scoreAuto.value) + 8;
@@ -765,13 +765,6 @@
                 teleDef.value += (teleDef.value == ""?"":",") + defList[i].innerText;
             }
         }
-
-        // var pickList = document.getElementsByName('pickList');
-        // var pickOut = document.getElementById('tele_pick');
-        // pickOut.value = "";
-        // for (var i=0; i<4; i++) {
-        //     pickOut.value += pickList[i].checked?"1":"0";
-        // }
 
         return true;
     }
