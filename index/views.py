@@ -51,20 +51,34 @@ def TeamPage(request, event, num):
         'telePlaceList': [[], [], []],
     }
     scoreData = {
+        'grid': [],
         'autoMax': 0,
         'autoAvg': 0,
-        'autoPlace': [0, 0, 0],
+        'autoPlaceMax': [0, 0, 0],
+        'autoPlaceAvg': [0, 0, 0],
         'autoDock': [0, 0, 0],
         'teleMax': 0,
         'teleAvg': 0,
         'teleCycle': 0,
+        'telePickAll': 0,
         'telePickMax': 0,
         'telePlaceMax': [0, 0, 0],
         'telePlaceAvg': [0, 0, 0],
-        'telePlaceSuc': [0, 0, 0],
+        'telePlaceSuc': 0,
         'teleDock': [0, 0, 0, 0],
         'teleDockTime': 0,
     }
+    scoutData = {
+        'quick': 0,
+        'defence': 0,
+        'aware': 0,
+        'human': 0,
+        'pick': 0,
+        'place': 0
+    }
+
+    for i in range(27):
+        scoreData['grid'].append([0, 0])
 
     for score in teamData.scores.all():
         allData['scoreList'].append(score.score_total)
@@ -72,11 +86,26 @@ def TeamPage(request, event, num):
         allData['autoList'].append(score.score_auto)
         allData['teleList'].append(score.score_tele)
         allData['gridList'].append(score.grid_as_list())
-        allData['pickList'].append(score.pick_as_dict())
+        allData['pickList'].append(score.pick_as_list())
         allData['autoDockList'].append(score.auto_dock)
         allData['teleDockList'].append(score.end_dock)
         allData['cycleList'].extend(score.cycle_as_list())
-        allData['dockTimerList'].append(float(score.timer_dock))
+        allData['dockTimerList'].append(float(score.timer_dock) if score.timer_dock else 0)
+        for g in list(map(int, score.auto_grid.split(',') if score.auto_grid != '' else [])):
+            scoreData['grid'][g-9 if g>26 else g][0] += 1
+        for g in list(map(int, score.tele_grid.split(',') if score.tele_grid != '' else [])):
+            scoreData['grid'][g-9 if g>26 else g][0] += 1
+
+    for scout in teamData.scouts.all():
+        scoutData['quick'] += scout.quick
+        scoutData['defence'] += scout.defence
+        scoutData['aware'] += scout.aware
+        scoutData['human'] += scout.human
+        scoutData['pick'] += scout.pick
+        scoutData['place'] += scout.place
+    
+    for key, data in scoutData.items():
+        scoutData[key] = round(data / (teamData.scouts.all().count() if teamData.scouts.all().count() else 1), 2)
 
     for sys in teamData.sysScore.all():
         allData['rankList'].append(sys.rank)
@@ -88,26 +117,132 @@ def TeamPage(request, event, num):
     
     overview['matchCount'] = teamData.scores.all().count()
     overview['scoreMax'] = max(allData['scoreList'])
-    overview['scoreAvg'] = sum(allData['scoreList']) / len(allData['scoreList'])
+    overview['scoreAvg'] = round(sum(allData['scoreList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
     overview['rp'] = sum(allData['rankList'])
-    overview['rs'] = sum(allData['rankList']) / (len(allData['rankList']) if len(allData['rankList']) else 1)
+    overview['rs'] = round(sum(allData['rankList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
     
     scoreData['autoMax'] = max(allData['autoList'])
-    scoreData['autoAvg'] = sum(allData['autoList'])/len(allData['autoList'])
+    scoreData['autoAvg'] = round(sum(allData['autoList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
     scoreData['teleMax'] = max(allData['teleList'])
-    scoreData['teleAvg'] = sum(allData['teleList'])/len(allData['teleList'])
+    scoreData['teleAvg'] = round(sum(allData['teleList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
 
 
+
+    for i in range(3):
+        scoreData['autoPlaceMax'][i] = max(allData['autoPlaceList'][i])
+        scoreData['autoPlaceAvg'][i] = round(sum(allData['autoPlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        scoreData['telePlaceMax'][i] = max(allData['telePlaceList'][i])
+        scoreData['telePlaceAvg'][i] = round(sum(allData['telePlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+
+    
+    pickSumList = list(map(sum, allData['pickList']))
+    scoreData['telePickAll'] = sum(pickSumList)
+    scoreData['telePickMax'] = pickSumList.index(max(pickSumList))
+    scoreData['telePlaceSuc'] = round(sum(map(sum, allData['telePlaceList'])) / (scoreData['telePickAll'] if scoreData['telePickAll'] else 1), 2)
+    scoreData['teleCycle'] = round(sum(allData['cycleList']) / (len(allData['cycleList']) if len(allData['cycleList']) else 1), 2)
+    scoreData['teleDockTime'] = round(sum(allData['dockTimerList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+
+    for i in range(overview['matchCount']):
+        scoreData['autoDock'][allData['autoDockList'][i]] += 1
+        scoreData['teleDock'][allData['teleDockList'][i]] += 1
 
     return render(request, 'team.html', {
         'teamData': teamData,
         'overview': overview,
-        'scoreData': scoreData
+        'scoreData': scoreData,
+        'scoutData': scoutData
     })
 
 def MatchPage(request, event, level, num):
-    return render(request, 'match.html', {
+    matchData = Match.objects.get(id=f'{event}_{level}_{num}')
+    scoreList = list(matchData.scores.all())
+    sysList = list(matchData.sysScore.all())
+    scoutList = list(matchData.scouts.all())
 
+    scoreData = {
+        'blue': {
+            'grid': [0]*27,
+            'gridView': [],
+            'start': [],
+            'cross': [],
+            'mobility': [],
+            'autoGridCount': 0,
+            'autoDock': [],
+            'autoScore': 0,
+            'teleGridCount': 0,
+            'endDock': [],
+            'teleScore': 0,
+            'link': [False]*27,
+            'totalScore': 0
+        },
+        'red': {
+            'grid': [0]*27,
+            'gridView': [],
+            'start': [],
+            'cross': [],
+            'mobility': [],
+            'autoGridCount': 0,
+            'autoDock': [],
+            'autoScore': 0,
+            'teleGridCount': 0,
+            'endDock': [],
+            'teleScore': 0,
+            'link': [False]*27,
+            'totalScore': 0
+        }
+    }
+
+    autoDocked = False
+    for score in scoreList:
+        side = 'blue' if scoreList.index(score) < 3 else 'red'
+        num = scoreList.index(score) if side == 'blue' else scoreList.index(score)-3
+        grid = score.grid_as_list()
+        for i in range(27):
+            if grid[i] > 0:
+                scoreData[side]['grid'][i] = grid[i]
+                if grid[i] > 2:
+                    scoreData[side]['teleGridCount'] += 1
+                    if i > 18:
+                        scoreData[side]['teleScore'] += 5
+                    elif i > 9:
+                        scoreData[side]['teleScore'] += 3
+                    else:
+                        scoreData[side]['teleScore'] += 2
+                else:
+                    scoreData[side]['autoGridCount'] += 1
+                    if i > 18:
+                        scoreData[side]['autoScore'] += 6
+                    elif i > 9:
+                        scoreData[side]['autoScore'] += 4
+                    else:
+                        scoreData[side]['autoScore'] += 3
+        scoreData[side]['start'].append(score.start)
+        scoreData[side]['mobility'].append(score.auto_mobility)
+        scoreData[side]['autoScore'] += (3 if score.auto_mobility else 0)
+        scoreData[side]['cross'].append([score.cross_cable, score.cross_charge])
+        scoreData[side]['autoDock'].append(score.auto_dock)
+        scoreData[side]['autoScore'] += (12 if score.auto_dock == 2 else (8 if score.auto_dock == 1 else 0))
+        autoDocked = score.auto_dock > 0
+        scoreData[side]['endDock'].append(score.end_dock)
+        scoreData[side]['autoScore'] += (12 if score.auto_dock == 2 else (8 if score.auto_dock == 1 else 0))
+
+    for key, data in scoreData.items():
+        for i in range(3):
+            for j in range(2, 9):
+                if data['grid'][i*9+j] > 0 and data['grid'][i*9+j-1] > 0 and data['grid'][i*9+j-2]:
+                    data['link'][i*9+j] = True
+                    data['totalScore'] += 5
+
+    for i in range(9):
+        scoreData['blue']['gridView'].append([scoreData['blue']['grid'][j*9+8-i] for j in range(3)])
+        scoreData['red']['gridView'].append([scoreData['red']['grid'][(2-j)*9+i] for j in range(3)])
+
+    print(scoreData['blue']['gridView'])
+    return render(request, 'match.html', {
+        'matchData': matchData,
+        'sysList': sysList,
+        'scoreData': scoreData,
+        'scoutList': scoutList
     })
 
 def ScoutPage(request, event, level, num, side):

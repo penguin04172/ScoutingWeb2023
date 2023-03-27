@@ -24,7 +24,7 @@
     </div>
     <div class="d-none" name="page" id="data">
         <div class="row mb-1 justify-content-center">
-            <h5>Placement Table</h5>
+            <h5>Grid</h5>
             <div class="col col-lg-6">
                 <table class="table table-bordered align-middle text-center border-dark">
                     <tbody>
@@ -210,10 +210,6 @@
         var page = document.getElementById(e.innerText.toLowerCase());
         page.className = "d-block";
         showPage = page;
-    }
-
-    window.onload = () => {
-        console.log({{scoreData.score_as_list}});
     }
 </script>
 {% endblock script %}

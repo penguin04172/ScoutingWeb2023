@@ -112,10 +112,10 @@ class MatchData(models.Model):
             else:
                 grid[i] = 1
         return grid
-
+    
     def dock_as_list(self):
         dock = []
-        dock.append('None (0)' if self.auto_dock==0 else ('Docked (8)' if self.auto_dock==2 else 'Engaged (12)'))
+        dock.append('None (0)' if self.auto_dock==0 else ('Docked (8)' if self.auto_dock==1 else 'Engaged (12)'))
         dock.append('None (0)' if self.end_dock==0 else ('Parked (2)' if self.end_dock==1 else ('Docked (6)' if self.end_dock==2 else 'Engaged (10)')))
         return dock
         
@@ -129,13 +129,11 @@ class MatchData(models.Model):
     def defend_as_list(self):
         return list(map(int, self.tele_defender.split(',')))
 
-    def pick_as_dict(self):
-        return {
-            'floorCone': self.tele_pick_fn,
-            'floorCube': self.tele_pick_fb,
-            'stationCone': self.tele_pick_sn,
-            'stationCube': self.tele_pick_sb,
-        }
+    def pick_as_list(self):
+        return [self.tele_pick_fn, self.tele_pick_fb, self.tele_pick_fb, self.tele_pick_sb]
+        
+    def link_as_list(self):
+        return list(map(int, self.other_link.split(',') if self.other_link != "" else []))
     
     class Meta:
         ordering = ['id']

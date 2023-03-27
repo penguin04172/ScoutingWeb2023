@@ -1,8 +1,276 @@
 {% extends 'base.html' %}
-{% block title %}Scouting {{selEvent}}{% endblock title %}
+{% block title %}Match Review {{selEvent}}{% endblock title %}
 {% block nav %}{% include 'nav.html' %}{% endblock nav %}
 {% block container %}
+<header>
+    <div class="container">
+        <div class="row mt-3 text-center">
+            <h3 id="title1">{{matchData.event.id}} {{matchData.level_as_str}} {{matchData.num}}</h3>
+        </div>
+        <div class="row mb-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Scoring</button></li>
+                    <li class="page-item"><button type="button" onclick="changePage(this)" class="page-link">Scout</button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
 <div class="container">
-    
+    <div class="d-block" name="page" id="scoring">
+        <div class="row mb-1 justify-content-center">
+            <h5>Grid</h5>
+            <div class="col col-lg-3">
+                <table class="table table-bordered align-middle text-center border-dark">
+                    <tbody>
+                        <tr>
+                            <th>Top</th>
+                            <th>Mid</th>
+                            <th>Bot</th>
+                        </tr>
+                        {% for grid in scoreData.blue.gridView %}
+                        <tr>
+                            {% for g in grid %}
+                            <td class="bg-blue">
+                                {% if g > 0 %}
+                                    {% if g|divisibleby:2 %}
+                                        <i class="bi bi-box-fill {% if g < 3 %}text-danger{% endif %}"></i>
+                                    {% else %}
+                                        <i class="bi bi-cone {% if g < 3 %}text-danger{% endif %}"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="bi bi-app text-trans"></i>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col col-lg-3">
+                <table class="table table-bordered align-middle text-center border-dark">
+                    <tbody>
+                        <tr>
+                            <th>Bot</th>
+                            <th>Mid</th>
+                            <th>Top</th>
+                        </tr>
+                        {% for grid in scoreData.red.gridView %}
+                        <tr>
+                            {% for g in grid %}
+                            <td class="bg-red">
+                                {% if g > 0 %}
+                                    {% if g|divisibleby:2 %}
+                                        <i class="bi bi-box-fill {% if g < 3 %}text-danger{% endif %}"></i>
+                                    {% else %}
+                                        <i class="bi bi-cone {% if g < 3 %}text-danger{% endif %}"></i>
+                                    {% endif %}
+                                {% else %}
+                                    <i class="bi bi-app text-trans"></i>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mb-1 justify-content-center">
+            <h5>Scoring</h5>
+            <div class="col col-lg-6">
+                <table class="table table-bordered text-center align-middle">
+                    <thead>
+                        <tr>
+                            {% for team in matchData.teams_as_list|slice:"0:3" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                            <th scope="col">Teams</th>
+                            {% for team in matchData.teams_as_list|slice:"3:6" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for i in scoreData.blue.start %}
+                            <td>{{i}}</td>
+                            {% endfor %}
+                            <th scope="row">Start Place</th>
+                            {% for i in scoreData.red.start %}
+                            <td>{{i}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for i in scoreData.blue.start %}
+                            <td>{% if i %}<i class="bi bi-check-lg"></i>(+3){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            {% endfor %}
+                            <th scope="row">Mobility</th>
+                            {% for i in scoreData.red.start %}
+                            <td>{% if i %}<i class="bi bi-check-lg"></i>(+3){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for i in scoreData.blue.cross %}
+                            <td>
+                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}/
+                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
+                            </td>
+                            {% endfor %}
+                            <th scope="row">Cross<br>Cable/Charge</th>
+                            {% for i in scoreData.red.cross %}
+                            <td>
+                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}/
+                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{scoreData.blue.autoGridCount}}</td>
+                            <th scope="row">Auto Grid Count</th>
+                            <td colspan="3">{{scoreData.red.autoGridCount}}</td>
+                        </tr>
+                        <tr>
+                            {% for i in scoreData.blue.start %}
+                            <td>
+                                {% if i == 2 %}
+                                    Engaged (+12)
+                                {% elif i == 1 %}
+                                    Docked (+8)
+                                {% else %}
+                                    None (+0)
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                            <th scope="row">Start Place</th>
+                            {% for i in scoreData.red.start %}
+                            <td>
+                                {% if i == 2 %}
+                                    Engaged (+12)
+                                {% elif i == 1 %}
+                                    Docked (+8)
+                                {% else %}
+                                    None (+0)
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="d-none" name="page" id="scout">
+        <div class="row mb-1 justify-content-center">
+            <h5>Scout Rank</h5>
+            <div class="col col-lg-6">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            {% for team in matchData.teams_as_list|slice:"0:3" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                            <th scope="col"></th>
+                            {% for team in matchData.teams_as_list|slice:"3:6" %}
+                            <th scope="col">{{team}}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.quick}}</td>
+                            {% endfor %}
+                            <th>Quickness</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.quick}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.defence}}</td>
+                            {% endfor %}
+                            <th>Defence</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.defence}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.aware}}</td>
+                            {% endfor %}
+                            <th>Awareness</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.aware}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.human}}</td>
+                            {% endfor %}
+                            <th>Human Coop</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.human}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.pick}}</td>
+                            {% endfor %}
+                            <th>Pickup</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.pick}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.place}}</td>
+                            {% endfor %}
+                            <th>Placement</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.place}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.foul}}</td>
+                            {% endfor %}
+                            <th>Penalty</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.foul}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.other}}</td>
+                            {% endfor %}
+                            <th>Comment</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.other}}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock container %}
+{% block script %}
+<script>
+    var showPage = document.getElementsByName('page')[0];
+    function changePage(e) {
+        showPage.className = "d-none";
+        var page = document.getElementById(e.innerText.toLowerCase());
+        page.className = "d-block";
+        showPage = page;
+    }
+
+    window.onload = () => {
+        console.log({{scoreData.score_as_list}});
+    }
+</script>
+{% endblock script %}

@@ -193,7 +193,7 @@
                             <tr>
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock1" value="2">
+                                        <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock1" value="1">
                                         <label class="form-check-label" for="auto_dock1">
                                             Docked (not Engaged)
                                         </label>
@@ -203,7 +203,7 @@
                             <tr>
                                 <td>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock2" value="3">
+                                        <input class="form-check-input" type="radio" name="auto_dock" id="auto_dock2" value="2">
                                         <label class="form-check-label" for="auto_dock2">
                                             Engaged
                                         </label>
@@ -723,11 +723,11 @@
         var scoreDock = document.getElementById('score_dock');
         scoreDock.value = 0;
         switch (document.querySelector('input[name="auto_dock"]:checked').value) {
-            case '2':
+            case '1':
                 scoreDock.value = parseInt(scoreDock.value) + 8;
                 scoreAuto.value = parseInt(scoreAuto.value) + 8;
                 break;
-            case '3':
+            case '2':
                 scoreDock.value = parseInt(scoreDock.value) + 12;
                 scoreAuto.value = parseInt(scoreAuto.value) + 12;
                 break;

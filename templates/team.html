@@ -18,7 +18,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td scope="row">{{overview.scoreMax}}</td>
+                        <td scope="row">{{overview.matchCount}}</td>
+                        <td>{{overview.scoreMax}}</td>
                         <td>{{overview.scoreAvg}}</td>
                         <td>{{overview.rp}} / {{overview.rs}}</td>
                         <td>{{overview.opr}}</td>
@@ -28,7 +29,37 @@
         </div>
     </div>
     <div class="row mb-1 justify-content-center">
-        <h5>Auto</h5>
+        <h5>Grid</h5>
+        <div class="col col-lg-6">
+            <table class="table table-bordered align-middle text-center border-dark">
+                <tbody>
+                    <tr>
+                        {% for g in scoreData.grid|slice:"0:9" %}
+                            <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
+                                {{g}}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for g in scoreData.grid|slice:"9:18" %}
+                            <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
+                                {{g}}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for g in scoreData.grid|slice:"18:27" %}
+                            <td class="bg-light">
+                                {{g}}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-1 justify-content-center">
+        <h5>Scoring</h5>
         <div class="col col-lg-6">
             <table class="table table-bordered">
                 <thead>
@@ -38,6 +69,26 @@
                 </thead>
                 <tbody>
                     {% for key, data in scoreData.items %}
+                    <tr>
+                        <td>{{key}}</td>
+                        <td>{{data}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-1 justify-content-center">
+        <h5>Scout</h5>
+        <div class="col col-lg-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, data in scoutData.items %}
                     <tr>
                         <td>{{key}}</td>
                         <td>{{data}}</td>
