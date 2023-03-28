@@ -237,7 +237,7 @@ def MatchPage(request, event, level, num):
         scoreData['blue']['gridView'].append([scoreData['blue']['grid'][j*9+8-i] for j in range(3)])
         scoreData['red']['gridView'].append([scoreData['red']['grid'][(2-j)*9+i] for j in range(3)])
 
-    print(scoreData['blue']['gridView'])
+    # print(scoreData['blue']['gridView'])
     return render(request, 'match.html', {
         'matchData': matchData,
         'sysList': sysList,

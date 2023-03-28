@@ -134,7 +134,7 @@
                             <td colspan="3">{{scoreData.red.autoGridCount}}</td>
                         </tr>
                         <tr>
-                            {% for i in scoreData.blue.start %}
+                            {% for i in scoreData.blue.autoDock %}
                             <td>
                                 {% if i == 2 %}
                                     Engaged (+12)
@@ -145,8 +145,8 @@
                                 {% endif %}
                             </td>
                             {% endfor %}
-                            <th scope="row">Start Place</th>
-                            {% for i in scoreData.red.start %}
+                            <th scope="row">Auto Dock</th>
+                            {% for i in scoreData.red.autoDock %}
                             <td>
                                 {% if i == 2 %}
                                     Engaged (+12)

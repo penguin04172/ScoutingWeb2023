@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-*y*_!p@e1i^rvbq#dju3x8z*q*u%axy!313o709vp^@2dulbpi
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = ['https://*.penguin4172.net','https://127.0.0.1']
 
 # Application definition
 
@@ -57,7 +57,7 @@ ROOT_URLCONF = 'ScoutingWeb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,6 +122,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfile/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
