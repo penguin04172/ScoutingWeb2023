@@ -62,6 +62,7 @@ def TeamPage(request, event, num):
         'teleCycle': 0,
         'telePickAll': 0,
         'telePickMax': 0,
+        'telePickMaxItem': 0,
         'telePlaceMax': [0, 0, 0],
         'telePlaceAvg': [0, 0, 0],
         'telePlaceSuc': 0,
@@ -76,7 +77,7 @@ def TeamPage(request, event, num):
         'pick': 0,
         'place': 0
     }
-
+    commentData = {}
     for i in range(27):
         scoreData['grid'].append([0, 0])
 
@@ -94,7 +95,8 @@ def TeamPage(request, event, num):
         for g in list(map(int, score.auto_grid.split(',') if score.auto_grid != '' else [])):
             scoreData['grid'][g-9 if g>26 else g][0] += 1
         for g in list(map(int, score.tele_grid.split(',') if score.tele_grid != '' else [])):
-            scoreData['grid'][g-9 if g>26 else g][0] += 1
+            scoreData['grid'][g-9 if g>26 else g][1] += 1
+        commentData[f'{score.match.level_as_str()}_{score.match.num}'] = [score.other_comment, '']
 
     for scout in teamData.scouts.all():
         scoutData['quick'] += scout.quick
@@ -103,6 +105,7 @@ def TeamPage(request, event, num):
         scoutData['human'] += scout.human
         scoutData['pick'] += scout.pick
         scoutData['place'] += scout.place
+        commentData[f'{scout.match.level_as_str()}_{scout.match.num}'][1] = (scout.other)
     
     for key, data in scoutData.items():
         scoutData[key] = round(data / (teamData.scouts.all().count() if teamData.scouts.all().count() else 1), 2)
@@ -116,41 +119,44 @@ def TeamPage(request, event, num):
             allData['telePlaceList'][i].append(grid[i*9:i*9+9].count(3) + grid[i*9:i*9+9].count(4))
     
     overview['matchCount'] = teamData.scores.all().count()
-    overview['scoreMax'] = max(allData['scoreList'])
-    overview['scoreAvg'] = round(sum(allData['scoreList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
-    overview['rp'] = sum(allData['rankList'])
-    overview['rs'] = round(sum(allData['rankList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
-    
-    scoreData['autoMax'] = max(allData['autoList'])
-    scoreData['autoAvg'] = round(sum(allData['autoList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
-    scoreData['teleMax'] = max(allData['teleList'])
-    scoreData['teleAvg'] = round(sum(allData['teleList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+    if overview['matchCount'] > 0:
+        overview['scoreMax'] = max(allData['scoreList'])
+        overview['scoreAvg'] = round(sum(allData['scoreList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        overview['rp'] = sum(allData['rankList'])
+        overview['rs'] = round(sum(allData['rankList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        
+        scoreData['autoMax'] = max(allData['autoList'])
+        scoreData['autoAvg'] = round(sum(allData['autoList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        scoreData['teleMax'] = max(allData['teleList'])
+        scoreData['teleAvg'] = round(sum(allData['teleList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
 
 
 
-    for i in range(3):
-        scoreData['autoPlaceMax'][i] = max(allData['autoPlaceList'][i])
-        scoreData['autoPlaceAvg'][i] = round(sum(allData['autoPlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
-        scoreData['telePlaceMax'][i] = max(allData['telePlaceList'][i])
-        scoreData['telePlaceAvg'][i] = round(sum(allData['telePlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        for i in range(3):
+            scoreData['autoPlaceMax'][i] = max(allData['autoPlaceList'][i])
+            scoreData['autoPlaceAvg'][i] = round(sum(allData['autoPlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+            scoreData['telePlaceMax'][i] = max(allData['telePlaceList'][i])
+            scoreData['telePlaceAvg'][i] = round(sum(allData['telePlaceList'][i]) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
 
-    
-    pickSumList = list(map(sum, allData['pickList']))
-    scoreData['telePickAll'] = sum(pickSumList)
-    scoreData['telePickMax'] = pickSumList.index(max(pickSumList))
-    scoreData['telePlaceSuc'] = round(sum(map(sum, allData['telePlaceList'])) / (scoreData['telePickAll'] if scoreData['telePickAll'] else 1), 2)
-    scoreData['teleCycle'] = round(sum(allData['cycleList']) / (len(allData['cycleList']) if len(allData['cycleList']) else 1), 2)
-    scoreData['teleDockTime'] = round(sum(allData['dockTimerList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
+        
+        pickSumList = list(map(sum, allData['pickList']))
+        scoreData['telePickAll'] = sum(pickSumList)
+        scoreData['telePickMaxItem'] = pickSumList.index(max(pickSumList))
+        scoreData['telePickMax'] = max(pickSumList)
+        scoreData['telePlaceSuc'] = round(sum(map(sum, allData['telePlaceList'])) / (scoreData['telePickAll'] if scoreData['telePickAll'] else 1), 2)
+        scoreData['teleCycle'] = round(sum(allData['cycleList']) / (len(allData['cycleList']) if len(allData['cycleList']) else 1), 2)
+        scoreData['teleDockTime'] = round(sum(allData['dockTimerList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
 
-    for i in range(overview['matchCount']):
-        scoreData['autoDock'][allData['autoDockList'][i]] += 1
-        scoreData['teleDock'][allData['teleDockList'][i]] += 1
+        for i in range(overview['matchCount']):
+            scoreData['autoDock'][allData['autoDockList'][i]] += 1
+            scoreData['teleDock'][allData['teleDockList'][i]] += 1
 
     return render(request, 'team.html', {
         'teamData': teamData,
         'overview': overview,
         'scoreData': scoreData,
-        'scoutData': scoutData
+        'scoutData': scoutData,
+        'commentData': commentData,
     })
 
 def MatchPage(request, event, level, num):
@@ -426,6 +432,6 @@ class TeamViewSet(viewsets.ModelViewSet):
 
                 scout = list(match.scouts.all())[teamIdx]
                 scout.team = team
-                score.save()
+                scout.save()
 
         return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')

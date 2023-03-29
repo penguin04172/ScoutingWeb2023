@@ -130,13 +130,13 @@ class MatchData(models.Model):
         return list(map(int, self.tele_defender.split(',')))
 
     def pick_as_list(self):
-        return [self.tele_pick_fn, self.tele_pick_fb, self.tele_pick_fb, self.tele_pick_sb]
+        return [self.tele_pick_fn, self.tele_pick_fb, self.tele_pick_sn, self.tele_pick_sb]
         
     def link_as_list(self):
         return list(map(int, self.other_link.split(',') if self.other_link != "" else []))
     
     class Meta:
-        ordering = ['id']
+        ordering = ['match__event_id', 'match__level', 'match__num', 'id']
 
 class SuperScout(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)
@@ -153,4 +153,4 @@ class SuperScout(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name='scouts')
 
     class Meta:
-        ordering = ['id']
+        ordering = ['match__event_id', 'match__level', 'match__num', 'id']

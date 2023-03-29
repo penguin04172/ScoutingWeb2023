@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Scouting {{selEvent}}{% endblock title %}
+{% block title %}{{teamData.id}}{% endblock title %}
 {% block nav %}{% include 'nav.html' %}{% endblock nav %}
 {% block container %}
 <div class="container">
@@ -36,21 +36,21 @@
                     <tr>
                         {% for g in scoreData.grid|slice:"0:9" %}
                             <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
-                                {{g}}
+                                {{g.0}} / {{g.1}}
                             </td>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for g in scoreData.grid|slice:"9:18" %}
                             <td class="{% cycle 'bg-cone' 'bg-cube' 'bg-cone' %}">
-                                {{g}}
+                                {{g.0}} / {{g.1}}
                             </td>
                         {% endfor %}
                     </tr>
                     <tr>
                         {% for g in scoreData.grid|slice:"18:27" %}
                             <td class="bg-light">
-                                {{g}}
+                                {{g.0}} / {{g.1}}
                             </td>
                         {% endfor %}
                     </tr>
@@ -61,19 +61,114 @@
     <div class="row mb-1 justify-content-center">
         <h5>Scoring</h5>
         <div class="col col-lg-6">
-            <table class="table table-bordered">
+            <table class="table table-bordered align-middle">
                 <thead>
                     <tr>
-
+                        <th scope="col">Items</th>
+                        <th scope="col">Data</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for key, data in scoreData.items %}
                     <tr>
-                        <td>{{key}}</td>
-                        <td>{{data}}</td>
+                        <th>Max Auto Points</th>
+                        <td>{{scoreData.autoMax}}</td>
                     </tr>
-                    {% endfor %}
+                    <tr>
+                        <th>Avg Auto Points</th>
+                        <td>{{scoreData.autoAvg}}</td>
+                    </tr>
+                    <tr>
+                        <th>Max Auto Grids</th>
+                        <td>
+                            Top: {{scoreData.autoPlaceMax.0}}<br/>
+                            Mid: {{scoreData.autoPlaceMax.1}}<br/>
+                            Bot: {{scoreData.autoPlaceMax.2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Avg Auto Grids</th>
+                        <td>
+                            Top: {{scoreData.autoPlaceAvg.0}}<br/>
+                            Mid: {{scoreData.autoPlaceAvg.1}}<br/>
+                            Bot: {{scoreData.autoPlaceAvg.2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Auto Dock</th>
+                        <td>
+                            Engage: {{scoreData.autoDock.2}} / {{overview.matchCount}}<br/>
+                            Docked: {{scoreData.autoDock.1}} / {{overview.matchCount}}<br/>
+                            None: {{scoreData.autoDock.0}} / {{overview.matchCount}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Max Tele Points</th>
+                        <td>{{scoreData.teleMax}}</td>
+                    </tr>
+                    <tr>
+                        <th>Avg Tele Points</th>
+                        <td>{{scoreData.teleAvg}}</td>
+                    </tr>
+                    <tr>
+                        <th>Avg Tele Cycle</th>
+                        <td>{{scoreData.teleCycle}}</td>
+                    </tr>
+                    <tr>
+                        <th>All Pick Counts</th>
+                        <td>{{scoreData.telePickAll}}</td>
+                    </tr>
+                    <tr>
+                        <th>Max Pick Items</th>
+                        <td>
+                            {% if scoreData.telePickMaxItem == 0 %}
+                            Floor Cone
+                            {% elif scoreData.telePickMaxItem == 1 %}
+                            Floor Cube
+                            {% elif scoreData.telePickMaxItem == 2 %}
+                            SubStation Cone
+                            {% else %}
+                            SubStation Cube
+                            {% endif %}
+                             ({{scoreData.telePickMax}})
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Max Tele Grids</th>
+                        <td>
+                            Top: {{scoreData.telePlaceMax.0}}<br/>
+                            Mid: {{scoreData.telePlaceMax.1}}<br/>
+                            Bot: {{scoreData.telePlaceMax.2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Avg Tele Grids</th>
+                        <td>
+                            Top: {{scoreData.telePlaceAvg.0}}<br/>
+                            Mid: {{scoreData.telePlaceAvg.1}}<br/>
+                            Bot: {{scoreData.telePlaceAvg.2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tele Grids Success</th>
+                        <td>
+                            {{scoreData.telePlaceSuc}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tele Dock</th>
+                        <td>
+                            Engage: {{scoreData.teleDock.3}} / {{overview.matchCount}}<br/>
+                            Docked: {{scoreData.teleDock.2}} / {{overview.matchCount}}<br/>
+                            Parked: {{scoreData.teleDock.1}} / {{overview.matchCount}}<br/>
+                            None: {{scoreData.teleDock.0}} / {{overview.matchCount}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tele Dock Time</th>
+                        <td>
+                            {{scoreData.teleDockTime}}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -84,7 +179,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-
+                        <th scope="col">Items</th>
+                        <th scope="col">Average Rank</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,6 +188,29 @@
                     <tr>
                         <td>{{key}}</td>
                         <td>{{data}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mb-1 justify-content-center">
+        <h5>Comments</h5>
+        <div class="col col-lg-6">
+            <table class="table table-bordered text-center align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Match</th>
+                        <th scope="col">Scoring Comment</th>
+                        <th scope="col">Scouting Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key, data in commentData.items %}
+                    <tr>
+                        <th scope="row">{{key}}</th>
+                        <td>{{data.0}}</td>
+                        <td>{{data.1}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
