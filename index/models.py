@@ -47,6 +47,8 @@ class SystemScoring(models.Model):
     team = models.ManyToManyField(Team, related_name="sysScore")
     match = models.ForeignKey(Match, on_delete=models.CASCADE, related_name="sysScore")
 
+    class Meta:
+        ordering = ['match__event_id', 'match__level', 'match__num', 'id']
 
 class MatchData(models.Model):
     id = models.CharField(max_length=30, primary_key=True, unique=True)

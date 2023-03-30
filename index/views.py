@@ -173,12 +173,20 @@ def MatchPage(request, event, level, num):
             'cross': [],
             'mobility': [],
             'autoGridCount': 0,
+            'autoGridScore': 0,
             'autoDock': [],
             'autoScore': 0,
+            'telePick': [],
+            'telePickCount': [],
             'teleGridCount': 0,
+            'teleGridScore': 0,
             'endDock': [],
+            'endScore': 0,
             'teleScore': 0,
             'link': [False]*27,
+            'linkCount': 0,
+            'linkScore': 0,
+            'coop': False,
             'totalScore': 0
         },
         'red': {
@@ -188,56 +196,104 @@ def MatchPage(request, event, level, num):
             'cross': [],
             'mobility': [],
             'autoGridCount': 0,
+            'autoGridScore': 0,
             'autoDock': [],
             'autoScore': 0,
+            'telePick': [],
+            'telePickCount': [],
             'teleGridCount': 0,
+            'teleGridScore': 0,
             'endDock': [],
+            'endScore': 0,
             'teleScore': 0,
             'link': [False]*27,
+            'linkCount': 0,
+            'linkScore': 0,
+            'coop': False,
             'totalScore': 0
         }
     }
 
     autoDocked = False
+    coopCount = 0
     for score in scoreList:
         side = 'blue' if scoreList.index(score) < 3 else 'red'
         num = scoreList.index(score) if side == 'blue' else scoreList.index(score)-3
+        if num == 0:
+            autoDocked = False
+            coopCount = 0
         grid = score.grid_as_list()
         for i in range(27):
             if grid[i] > 0:
-                scoreData[side]['grid'][i] = grid[i]
-                if grid[i] > 2:
-                    scoreData[side]['teleGridCount'] += 1
-                    if i > 18:
-                        scoreData[side]['teleScore'] += 5
-                    elif i > 9:
-                        scoreData[side]['teleScore'] += 3
+                if scoreData[side]['grid'][i] == 0:
+                    scoreData[side]['grid'][i] = grid[i]
+                    if grid[i] > 2:
+                        scoreData[side]['teleGridCount'] += 1
+                        if i > 18:
+                            scoreData[side]['teleScore'] += 2
+                            scoreData[side]['teleGridScore'] += 2
+                        elif i > 9:
+                            scoreData[side]['teleScore'] += 3
+                            scoreData[side]['teleGridScore'] += 3
+                        else:
+                            scoreData[side]['teleScore'] += 5
+                            scoreData[side]['teleGridScore'] += 5
                     else:
-                        scoreData[side]['teleScore'] += 2
-                else:
+                        scoreData[side]['autoGridCount'] += 1
+                        if i > 18:
+                            scoreData[side]['autoScore'] += 3
+                            scoreData[side]['autoGridScore'] += 3
+                        elif i > 9:
+                            scoreData[side]['autoScore'] += 4
+                            scoreData[side]['autoGridScore'] += 4
+                        else:
+                            scoreData[side]['autoScore'] += 6
+                            scoreData[side]['autoGridScore'] += 6
+                    if i%9 > 2 and i%9 < 6:
+                        coopCount += 1
+                elif grid[i] < 3 and scoreData[side]['grid'][i] > 2:
+                    scoreData[side]['grid'][i] = grid[i]
+                    scoreData[side]['teleGridCount'] -= 1
                     scoreData[side]['autoGridCount'] += 1
                     if i > 18:
-                        scoreData[side]['autoScore'] += 6
-                    elif i > 9:
-                        scoreData[side]['autoScore'] += 4
-                    else:
+                        scoreData[side]['teleScore'] -= 2
+                        scoreData[side]['teleGridScore'] -= 2
                         scoreData[side]['autoScore'] += 3
+                        scoreData[side]['autoGridScore'] += 3
+                    elif i > 9:
+                        scoreData[side]['teleScore'] -= 3
+                        scoreData[side]['teleGridScore'] -= 3
+                        scoreData[side]['autoScore'] += 4
+                        scoreData[side]['autoGridScore'] += 4
+                    else:
+                        scoreData[side]['teleScore'] -= 5
+                        scoreData[side]['teleGridScore'] -= 5
+                        scoreData[side]['autoScore'] += 6
+                        scoreData[side]['autoGridScore'] += 6
+
         scoreData[side]['start'].append(score.start)
         scoreData[side]['mobility'].append(score.auto_mobility)
         scoreData[side]['autoScore'] += (3 if score.auto_mobility else 0)
         scoreData[side]['cross'].append([score.cross_cable, score.cross_charge])
+        scoreData[side]['telePick'].append(score.pick_as_list())
+        scoreData[side]['telePickCount'].append(sum(score.pick_as_list()))
         scoreData[side]['autoDock'].append(score.auto_dock)
-        scoreData[side]['autoScore'] += (12 if score.auto_dock == 2 else (8 if score.auto_dock == 1 else 0))
+        scoreData[side]['autoScore'] += (12 if score.auto_dock == 2 and not autoDocked else (8 if score.auto_dock == 1 and not autoDocked else 0))
         autoDocked = score.auto_dock > 0
         scoreData[side]['endDock'].append(score.end_dock)
-        scoreData[side]['autoScore'] += (12 if score.auto_dock == 2 else (8 if score.auto_dock == 1 else 0))
+        scoreData[side]['endScore'] += (10 if score.end_dock == 3 else (6 if score.end_dock == 2 else (2 if score.end_dock == 1 else 0)))
+        scoreData[side]['teleScore'] += (10 if score.end_dock == 3 else (6 if score.end_dock == 2 else (2 if score.end_dock == 1 else 0)))
+        scoreData[side]['coop'] = coopCount > 4
 
     for key, data in scoreData.items():
         for i in range(3):
             for j in range(2, 9):
-                if data['grid'][i*9+j] > 0 and data['grid'][i*9+j-1] > 0 and data['grid'][i*9+j-2]:
+                if data['grid'][i*9+j] > 0 and data['grid'][i*9+j-1] > 0 and data['grid'][i*9+j-2] and not data['link'][i*9+j-1] and not data['link'][i*9+j-2]:
                     data['link'][i*9+j] = True
+                    data['linkScore'] += 5
                     data['totalScore'] += 5
+        data['totalScore'] += data['autoScore'] + data['teleScore']
+        data['linkCount'] = data['link'].count(True)
 
     for i in range(9):
         scoreData['blue']['gridView'].append([scoreData['blue']['grid'][j*9+8-i] for j in range(3)])
@@ -433,5 +489,10 @@ class TeamViewSet(viewsets.ModelViewSet):
                 scout = list(match.scouts.all())[teamIdx]
                 scout.team = team
                 scout.save()
+
+                if teamIdx > 2:
+                    sysScore = match.sysScore.last()
+                    sysScore.team.add(team)
+                    sysScore.save()
 
         return HttpResponseRedirect(f'/data/{request.POST.get("event_id")}/')
