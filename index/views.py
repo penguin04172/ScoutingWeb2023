@@ -304,6 +304,7 @@ def MatchPage(request, event, level, num):
         'matchData': matchData,
         'sysList': sysList,
         'scoreData': scoreData,
+        'scoreList': scoreList,
         'scoutList': scoutList
     })
 

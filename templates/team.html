@@ -30,8 +30,8 @@
     </div>
     <div class="row mb-1 justify-content-center">
         <h5>Grid</h5>
-        <div class="col col-lg-6">
-            <table class="table table-bordered align-middle text-center border-dark">
+        <div class="col col-lg-6" style="overflow: scroll;">
+            <table class="table table-bordered align-middle text-center border-dark text-nowrap">
                 <tbody>
                     <tr>
                         {% for g in scoreData.grid|slice:"0:9" %}
