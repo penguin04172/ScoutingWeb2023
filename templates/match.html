@@ -118,14 +118,14 @@
                             {% for i in scoreData.blue.cross %}
                             <td>
                                 {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}/
-                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
+                                {% if i.1 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
                             </td>
                             {% endfor %}
                             <th scope="row">Cross<br>Cable/Charge</th>
                             {% for i in scoreData.red.cross %}
                             <td>
                                 {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}/
-                                {% if i.0 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
+                                {% if i.1 %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}
                             </td>
                             {% endfor %}
                         </tr>
@@ -269,7 +269,7 @@
                         </tr>
                         <tr>
                             <td colspan="3">{% if scoreData.blue.endScore >= 26 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
-                            <th scope="row">Coopertition</th>
+                            <th scope="row">Activation Bonus</th>
                             <td colspan="3">{% if scoreData.red.endScore >= 26 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
                         </tr>
                         <tr>

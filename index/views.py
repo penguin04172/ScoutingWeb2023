@@ -362,9 +362,9 @@ def RecordPage(request, event, level, num, robot):
     if robot == 6:
         if request.method == 'POST':
             record = MatchData.objects.get(id=request.POST.get('id'))
-
-            if (Team.objects.filter(id=f'{event}_{request.POST.get("team")}').first() != None):
-                record.team_data.id = f'{event}_{request.POST.get("team")}'
+            team = Team.objects.filter(id=f'{event}_{request.POST.get("team")}').first()
+            if (team != None):
+                record.team_data = team
 
             record.scouter = request.POST.get('scouter')
             record.team = int(request.POST.get('team'))
