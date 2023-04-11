@@ -81,7 +81,7 @@ def TeamPage(request, event, num):
     for i in range(27):
         scoreData['grid'].append([0, 0])
 
-    for score in teamData.scores.all():
+    for score in teamData.scores.filter(played=True).all():
         allData['scoreList'].append(score.score_total)
         allData['startList'].append(score.start)
         allData['autoList'].append(score.score_auto)
