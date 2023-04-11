@@ -105,7 +105,8 @@ def TeamPage(request, event, num):
         scoutData['human'] += scout.human
         scoutData['pick'] += scout.pick
         scoutData['place'] += scout.place
-        commentData[f'{scout.match.level_as_str()}_{scout.match.num}'][1] = (scout.other)
+        if f'{scout.match.level_as_str()}_{scout.match.num}' in commentData:
+            commentData[f'{scout.match.level_as_str()}_{scout.match.num}'][1] = scout.comment
     
     for key, data in scoutData.items():
         scoutData[key] = round(data / (teamData.scouts.all().count() if teamData.scouts.all().count() else 1), 2)
@@ -336,7 +337,7 @@ def ScoutPage(request, event, level, num, side):
                 scoutList[i].pick = request.POST.getlist('pick')[i]
                 scoutList[i].place = request.POST.getlist('place')[i]
                 scoutList[i].foul = request.POST.getlist('foul')[i]
-                scoutList[i].other = request.POST.getlist('other')[i]
+                scoutList[i].comment = request.POST.getlist('comment')[i]
                 scoutList[i].save()
 
             systemData.mobility = request.POST.get('mobility')
