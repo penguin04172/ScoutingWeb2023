@@ -118,7 +118,7 @@ def TeamPage(request, event, num):
             allData['autoPlaceList'][i].append(grid[i*9:i*9+9].count(1) + grid[i*9:i*9+9].count(2))
             allData['telePlaceList'][i].append(grid[i*9:i*9+9].count(3) + grid[i*9:i*9+9].count(4))
     
-    overview['matchCount'] = teamData.scores.all().count()
+    overview['matchCount'] = teamData.scores.filter(played=True).all().count()
     if overview['matchCount'] > 0:
         overview['scoreMax'] = max(allData['scoreList'])
         overview['scoreAvg'] = round(sum(allData['scoreList']) / (overview['matchCount'] if overview['matchCount'] else 1), 2)
