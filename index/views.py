@@ -333,6 +333,7 @@ def ScoutPage(request, event, level, num, side):
                 scoutList[i].quick = request.POST.getlist('quick')[i]
                 scoutList[i].defence = request.POST.getlist('defence')[i]
                 scoutList[i].aware = request.POST.getlist('aware')[i]
+                scoutList[i].dodge = request.POST.getlist('dodge')[i]
                 scoutList[i].human = request.POST.getlist('human')[i]
                 scoutList[i].pick = request.POST.getlist('pick')[i]
                 scoutList[i].place = request.POST.getlist('place')[i]
@@ -449,6 +450,7 @@ class MatchViewSet(viewsets.ModelViewSet):
                 quick = place,
                 defence = place,
                 aware = place,
+                dodge = place,
                 human = place,
                 pick = place,
                 place = place,

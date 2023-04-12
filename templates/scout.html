@@ -59,6 +59,18 @@
                         {% endfor %}
                     </tr>
                     <tr>
+                        <th scope="row">Dodge</th>
+                        {% for scout in scoutList %}
+                        <td>
+                            <select class="form-select form-select-sm" name="dodge" onchange="checkSelect(this)">
+                                <option value="1" {% if scout.dodge == 1 %}selected{% endif %}>1</option>
+                                <option value="2" {% if scout.dodge == 2 %}selected{% endif %}>2</option>
+                                <option value="3" {% if scout.dodge == 3 %}selected{% endif %}>3</option>
+                            </select>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
                         <th scope="row">Awareness</th>
                         {% for scout in scoutList %}
                         <td>
