@@ -284,7 +284,7 @@ def MatchPage(request, event, level, num):
         scoreData[side]['endDock'].append(score.end_dock)
         scoreData[side]['endScore'] += (10 if score.end_dock == 3 else (6 if score.end_dock == 2 else (2 if score.end_dock == 1 else 0)))
         scoreData[side]['teleScore'] += (10 if score.end_dock == 3 else (6 if score.end_dock == 2 else (2 if score.end_dock == 1 else 0)))
-        scoreData[side]['coop'] = coopCount > 4
+        scoreData[side]['coop'] = coopCount >= 3
 
     for key, data in scoreData.items():
         for i in range(3):
@@ -381,8 +381,10 @@ def RecordPage(request, event, level, num, robot):
             record.tele_trans = int(request.POST.get('tele_trans'))
             record.tele_fed = request.POST.get('tele_fed')!=None
             record.tele_defender = request.POST.get('tele_defender')
+            record.tele_pick_sn = request.POST.get('tele_pick_dn')
             record.tele_pick_sn = request.POST.get('tele_pick_sn')
             record.tele_pick_fn = request.POST.get('tele_pick_fn')
+            record.tele_pick_fn = request.POST.get('tele_pick_db')
             record.tele_pick_sb = request.POST.get('tele_pick_sb')
             record.tele_pick_fb = request.POST.get('tele_pick_fb')
             record.tele_fail = int(request.POST.get('tele_fail'))
@@ -398,6 +400,7 @@ def RecordPage(request, event, level, num, robot):
             record.score_dock = int(request.POST.get('score_dock'))
             record.score_grid = int(request.POST.get('score_grid'))
             record.score_total = int(request.POST.get('score_total'))
+            record.played = request.POST.get('played')!=None
             record.save()
 
             return HttpResponseRedirect(f'/data/{event}/')

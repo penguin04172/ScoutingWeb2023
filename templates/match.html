@@ -263,9 +263,9 @@
                             <td colspan="3">{% if scoreData.red.coop %}<i class="bi bi-check-lg"></i>{% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
                         </tr>
                         <tr>
-                            <td colspan="3">{% if scoreData.blue.coop and scoreData.blue.linkCount >= 4 or scoreData.blue.linkCount >= 5 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            <td colspan="3">{% if scoreData.blue.coop and scoreData.blue.linkCount >= 5 or scoreData.blue.linkCount >= 6 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
                             <th scope="row">Sustainability Bonus</th>
-                            <td colspan="3">{% if scoreData.red.coop and scoreData.red.linkCount >= 4 or scoreData.red.linkCount >= 5 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
+                            <td colspan="3">{% if scoreData.red.coop and scoreData.red.linkCount >= 5 or scoreData.red.linkCount >= 6 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
                         </tr>
                         <tr>
                             <td colspan="3">{% if scoreData.blue.endScore >= 26 %}<i class="bi bi-check-lg"></i> (+1RP){% else %}<i class="bi bi-x-lg"></i>{% endif %}</td>
