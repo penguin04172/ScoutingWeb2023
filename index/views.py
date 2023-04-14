@@ -166,6 +166,10 @@ def MatchPage(request, event, level, num):
     sysList = list(matchData.sysScore.all())
     scoutList = list(matchData.scouts.all())
 
+    gridData = {
+        'blue': [],
+        'red': []
+    }
     scoreData = {
         'blue': {
             'grid': [0]*27,
@@ -185,9 +189,11 @@ def MatchPage(request, event, level, num):
             'endScore': 0,
             'teleScore': 0,
             'link': [False]*27,
-            'super': [False]*27,
             'linkCount': 0,
             'linkScore': 0,
+            'super': [False]*27,
+            'superCount': 0,
+            'superScore': 0,
             'coop': False,
             'totalScore': 0
         },
@@ -209,9 +215,11 @@ def MatchPage(request, event, level, num):
             'endScore': 0,
             'teleScore': 0,
             'link': [False]*27,
-            'super': [False]*27,
             'linkCount': 0,
             'linkScore': 0,
+            'super': [False]*27,
+            'superCount': 0,
+            'superScore': 0,
             'coop': False,
             'totalScore': 0
         }
@@ -225,6 +233,8 @@ def MatchPage(request, event, level, num):
         if num == 0:
             autoDocked = False
             coopCount = 0
+        gridData[side] += list(map(int, score.auto_grid.split(',') if score.auto_grid != '' else []))
+        gridData[side] += list(map(int, score.tele_grid.split(',') if score.tele_grid != '' else []))
         grid = score.grid_as_list()
         for i in range(27):
             if grid[i] > 0:
@@ -232,10 +242,10 @@ def MatchPage(request, event, level, num):
                     scoreData[side]['grid'][i] = grid[i]
                     if grid[i] > 2:
                         scoreData[side]['teleGridCount'] += 1
-                        if i > 18:
+                        if i > 17:
                             scoreData[side]['teleScore'] += 2
                             scoreData[side]['teleGridScore'] += 2
-                        elif i > 9:
+                        elif i > 8:
                             scoreData[side]['teleScore'] += 3
                             scoreData[side]['teleGridScore'] += 3
                         else:
@@ -243,10 +253,10 @@ def MatchPage(request, event, level, num):
                             scoreData[side]['teleGridScore'] += 5
                     else:
                         scoreData[side]['autoGridCount'] += 1
-                        if i > 18:
+                        if i > 17:
                             scoreData[side]['autoScore'] += 3
                             scoreData[side]['autoGridScore'] += 3
-                        elif i > 9:
+                        elif i > 8:
                             scoreData[side]['autoScore'] += 4
                             scoreData[side]['autoGridScore'] += 4
                         else:
@@ -258,12 +268,12 @@ def MatchPage(request, event, level, num):
                     scoreData[side]['grid'][i] = grid[i]
                     scoreData[side]['teleGridCount'] -= 1
                     scoreData[side]['autoGridCount'] += 1
-                    if i > 18:
+                    if i > 17:
                         scoreData[side]['teleScore'] -= 2
                         scoreData[side]['teleGridScore'] -= 2
                         scoreData[side]['autoScore'] += 3
                         scoreData[side]['autoGridScore'] += 3
-                    elif i > 9:
+                    elif i > 8:
                         scoreData[side]['teleScore'] -= 3
                         scoreData[side]['teleGridScore'] -= 3
                         scoreData[side]['autoScore'] += 4
@@ -288,6 +298,18 @@ def MatchPage(request, event, level, num):
         scoreData[side]['teleScore'] += (10 if score.end_dock == 3 else (6 if score.end_dock == 2 else (2 if score.end_dock == 1 else 0)))
         scoreData[side]['coop'] = coopCount >= 3
 
+    for side in scoreData:
+        if scoreData[side]['grid'].count(0) == 0:
+            for i in range (27):
+                if gridData[side].count(i) > 1:
+                    scoreData[side]['grid'][i] += 10
+                    scoreData[side]['teleGridCount'] += 1
+                    scoreData[side]['teleGridScore'] += 3
+                    scoreData[side]['super'][i] = True
+                    scoreData[side]['superCount'] += 1
+                    scoreData[side]['superScore'] += 3
+                    scoreData[side]['teleScore'] += 3
+
     for key, data in scoreData.items():
         for i in range(3):
             for j in range(2, 9):
@@ -298,10 +320,11 @@ def MatchPage(request, event, level, num):
         data['totalScore'] += data['autoScore'] + data['teleScore']
         data['linkCount'] = data['link'].count(True)
 
+
     for i in range(9):
         scoreData['blue']['gridView'].append([scoreData['blue']['grid'][j*9+8-i] for j in range(3)])
         scoreData['red']['gridView'].append([scoreData['red']['grid'][(2-j)*9+i] for j in range(3)])
-
+    
     # print(scoreData['blue']['gridView'])
     return render(request, 'match.html', {
         'matchData': matchData,
@@ -384,10 +407,10 @@ def RecordPage(request, event, level, num, robot):
             record.tele_trans = int(request.POST.get('tele_trans'))
             record.tele_fed = request.POST.get('tele_fed')!=None
             record.tele_defender = request.POST.get('tele_defender')
-            record.tele_pick_sn = request.POST.get('tele_pick_dn')
+            record.tele_pick_dn = request.POST.get('tele_pick_dn')
             record.tele_pick_sn = request.POST.get('tele_pick_sn')
             record.tele_pick_fn = request.POST.get('tele_pick_fn')
-            record.tele_pick_fn = request.POST.get('tele_pick_db')
+            record.tele_pick_db = request.POST.get('tele_pick_db')
             record.tele_pick_sb = request.POST.get('tele_pick_sb')
             record.tele_pick_fb = request.POST.get('tele_pick_fb')
             record.tele_fail = int(request.POST.get('tele_fail'))

@@ -31,7 +31,6 @@
     <div class="row mb-1 justify-content-center">
         <h5>Grid (Auto/Tele) Placement</h5>
         <p>
-            Each grid only have one placement in match<br/>
             Higher number in grid<br/>
             More possible team place grid
         </p>
@@ -130,9 +129,13 @@
                             {% elif scoreData.telePickMaxItem == 1 %}
                             Floor Cube
                             {% elif scoreData.telePickMaxItem == 2 %}
-                            SubStation Cone
+                            Single Sub Cone
+                            {% elif scoreData.telePickMaxItem == 3 %}
+                            Single Sub Cube
+                            {% elif scoreData.telePickMaxItem == 4 %}
+                            Double Sub Cone
                             {% else %}
-                            SubStation Cube
+                            Double Sub Cube
                             {% endif %}
                              ({{scoreData.telePickMax}})
                         </td>

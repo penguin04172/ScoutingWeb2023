@@ -112,14 +112,35 @@
                             <td colspan="2">{{scoreData.other_link}}</td>
                         </tr>
                         <tr>
-                            <th>Pickup (Cone)</th>
-                            <td>Substation: {{scoreData.tele_pick_sn}}</td>
-                            <td>Floor: {{scoreData.tele_pick_fn}}</td>
-                        </tr>
-                        <tr>
-                            <th>Pickup (Cube)</th>
-                            <td>Substation: {{scoreData.tele_pick_sb}}</td>
-                            <td>Floor: {{scoreData.tele_pick_fb}}</td>
+                            <th>Pickup</th>
+                            <td colspan="2">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Place</th>
+                                            <th scope="col">Cone</th>
+                                            <th scope="col">Cube</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Double</th>
+                                            <td>{{scoreData.tele_pick_dn}}</td>
+                                            <td>{{scoreData.tele_pick_db}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Single</th>
+                                            <td>{{scoreData.tele_pick_sn}}</td>
+                                            <td>{{scoreData.tele_pick_sb}}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Floor</th>
+                                            <td>{{scoreData.tele_pick_fn}}</td>
+                                            <td>{{scoreData.tele_pick_fb}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
                             <th>Pickup (Fed)</th>

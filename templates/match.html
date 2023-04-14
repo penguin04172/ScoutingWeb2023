@@ -22,6 +22,11 @@
     <div class="d-block" name="page" id="scoring">
         <div class="row mb-1 justify-content-center">
             <h5>Grid</h5>
+            <p>
+                Black Object: Place in TeleOP<br/>
+                Red Object: Place in Auto<br/>
+                Green Background: Super Charged node
+            </p>
             <div class="col col-lg-3">
                 <table class="table table-bordered align-middle text-center border-dark">
                     <tbody>
@@ -33,12 +38,12 @@
                         {% for grid in scoreData.blue.gridView %}
                         <tr>
                             {% for g in grid %}
-                            <td class="bg-blue">
+                            <td class="{% if g|get_digit:'2' %}bg-success{% else %}bg-blue{% endif %}">
                                 {% if g > 0 %}
                                     {% if g|divisibleby:2 %}
-                                        <i class="bi bi-box-fill {% if g < 3 %}text-danger{% endif %}"></i>
+                                        <i class="bi bi-box-fill {% if g|get_digit:'1' < 3 %}text-danger{% endif %}"></i>
                                     {% else %}
-                                        <i class="bi bi-cone {% if g < 3 %}text-danger{% endif %}"></i>
+                                        <i class="bi bi-cone {% if g|get_digit:'1' < 3 %}text-danger{% endif %}"></i>
                                     {% endif %}
                                 {% else %}
                                     <i class="bi bi-app text-trans"></i>
@@ -61,12 +66,12 @@
                         {% for grid in scoreData.red.gridView %}
                         <tr>
                             {% for g in grid %}
-                            <td class="bg-red">
+                            <td class="{% if g|get_digit:'2' %}bg-success{% else %}bg-red{% endif %}">
                                 {% if g > 0 %}
                                     {% if g|divisibleby:2 %}
-                                        <i class="bi bi-box-fill {% if g < 3 %}text-danger{% endif %}"></i>
+                                        <i class="bi bi-box-fill {% if g|get_digit:'1' < 3 %}text-danger{% endif %}"></i>
                                     {% else %}
-                                        <i class="bi bi-cone {% if g < 3 %}text-danger{% endif %}"></i>
+                                        <i class="bi bi-cone {% if g|get_digit:'1' < 3 %}text-danger{% endif %}"></i>
                                     {% endif %}
                                 {% else %}
                                     <i class="bi bi-app text-trans"></i>
@@ -171,18 +176,21 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                SubStation (Cone/Cube)<br/>
+                                Double Sub (Cone/Cube)<br/>
+                                Single Sub (Cone/Cube)<br/>
                                 Floor (Cone/Cube)
                             </td>
                             <th scope="row">Tele Pickup Explain</th>
                             <td colspan="3">
-                                SubStation (Cone/Cube)<br/>
+                                Double Sub (Cone/Cube)<br/>
+                                Single Sub (Cone/Cube)<br/>
                                 Floor (Cone/Cube)
                             </td>
                         </tr>
                         <tr>
                             {% for i in scoreData.blue.telePick %}
                             <td>
+                                {{i.4}} / {{i.5}}<br/>
                                 {{i.2}} / {{i.3}}<br/>
                                 {{i.0}} / {{i.1}}
                             </td>
@@ -190,6 +198,7 @@
                             <th scope="row">Tele Pickup</th>
                             {% for i in scoreData.red.telePick %}
                             <td>
+                                {{i.4}} / {{i.5}}<br/>
                                 {{i.2}} / {{i.3}}<br/>
                                 {{i.0}} / {{i.1}}
                             </td>
@@ -212,6 +221,16 @@
                             <td colspan="3">{{scoreData.blue.teleGridCount}}</td>
                             <th scope="row">Tele Grid Count</th>
                             <td colspan="3">{{scoreData.red.teleGridCount}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{scoreData.blue.superCount}}</td>
+                            <th scope="row">Super Grid Count</th>
+                            <td colspan="3">{{scoreData.red.superCount}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">{{scoreData.blue.superScore}}</td>
+                            <th scope="row">Super Grid Score</th>
+                            <td colspan="3">{{scoreData.red.superScore}}</td>
                         </tr>
                         <tr>
                             <th colspan="3" class="bg-blue">{{scoreData.blue.teleGridScore}}</th>
@@ -363,6 +382,15 @@
                             <th>Awareness</th>
                             {% for scout in scoutList|slice:"3:6" %}
                             <td>{{scout.aware}}</td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for scout in scoutList|slice:"0:3" %}
+                            <td>{{scout.dodge}}</td>
+                            {% endfor %}
+                            <th>Dodge</th>
+                            {% for scout in scoutList|slice:"3:6" %}
+                            <td>{{scout.dodge}}</td>
                             {% endfor %}
                         </tr>
                         <tr>
